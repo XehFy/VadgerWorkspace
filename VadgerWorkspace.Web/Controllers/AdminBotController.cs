@@ -3,7 +3,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace VadgerWorkspace.Controllers
+namespace VadgerWorkspace.Web.Controllers
 {
     [ApiController]
     [Route("/AdminBot")]

@@ -1,4 +1,4 @@
-using VadgerWorkspace;
+using VadgerWorkspace.Web;
 using Telegram.Bot;
 using Microsoft.AspNetCore;
 

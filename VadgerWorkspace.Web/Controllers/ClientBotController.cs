@@ -3,15 +3,15 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace VadgerWorkspace.Controllers
+namespace VadgerWorkspace.Web.Controllers
 {
     [ApiController]
-    [Route("/EmployeeBot")]
-    public class EmployeeBotController : Controller
+    [Route("/ClientBot")]
+    public class ClientBotController : Controller
     {
-        readonly IEmployeeBot _client;
+        readonly IClientBot _client;
 
-        public EmployeeBotController(IEmployeeBot client)
+        public ClientBotController(IClientBot client)
         {
             _client = client;
         }
@@ -21,7 +21,7 @@ namespace VadgerWorkspace.Controllers
         {
             if (update.Type == UpdateType.Message)
             {
-                await _client.SendTextMessageAsync(update.Message.Chat.Id, "TESTING_EMPLOYEE");
+                await _client.SendTextMessageAsync(update.Message.Chat.Id, "TESTING_CLIENT");
             }
             return Ok();
         }

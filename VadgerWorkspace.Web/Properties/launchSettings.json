@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "VadgerWorkspace": {
+    "VadgerWorkspace.Web": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

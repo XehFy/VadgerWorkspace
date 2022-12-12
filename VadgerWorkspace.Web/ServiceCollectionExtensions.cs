@@ -1,6 +1,6 @@
 ﻿using Telegram.Bot;
 
-namespace VadgerWorkspace
+namespace VadgerWorkspace.Web
 {
     public static class ServiceCollectionExtensions
     {
