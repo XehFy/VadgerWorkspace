@@ -30,8 +30,8 @@ namespace VadgerWorkspace.Domain.Commands.Client.InstantReply
         public override async Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
             ClientRepository repo = new ClientRepository(context);
-            Data.Entities.Client client = null;
-            //var client = await repo.FindByCondition(o => o.Id == message.Chat.Id)
+            var res = repo.FindByCondition(o => o.Id == message.Chat.Id);
+
             if (client == null) {
                 repo.Create(new Data.Entities.Client
                 {
@@ -39,7 +39,7 @@ namespace VadgerWorkspace.Domain.Commands.Client.InstantReply
                     Id = message.Chat.Id,
                     Stage = Data.Stages.starting
                 });
-                await repo.SaveAsync();
+                repo.SaveSync();
             }
             else
             {
