@@ -30,6 +30,7 @@ namespace VadgerWorkspace.Data.Repositories
         public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression) 
             => _dbContext.Set<T>().Where(expression).AsNoTracking();
 
+
         public async Task SaveAsync() 
         { 
             await _dbContext.SaveChangesAsync(); 
