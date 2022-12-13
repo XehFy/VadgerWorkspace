@@ -29,7 +29,7 @@ namespace VadgerWorkspace.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
-                    b.Property<byte?>("Stage")
+                    b.Property<byte?>("RegistrationStage")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Town")
@@ -44,9 +44,6 @@ namespace VadgerWorkspace.Data.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long>("ClientId")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool?>("IsAdmin")
