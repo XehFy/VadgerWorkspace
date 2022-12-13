@@ -27,16 +27,59 @@ namespace VadgerWorkspace.Web.Controllers
 
         public EmployeeBotController(IAdminBot adminBot, IClientBot clientBot, IEmployeeBot employeeBot, IEnumerable<ICommandService> commandServices, VadgerContext context)
         {
+            _commandService = commandServices.First(o => o.GetType() == typeof(EmployeeCommandService));
             _clientBot = clientBot;
+            _adminBot = adminBot;
+            _employeeBot = employeeBot;
+
+            _context = context;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Update update)
+        public async Task<IActionResult> Post([FromBody] Update update, CancellationToken cancellationToken)
         {
-            if (update.Type == UpdateType.Message)
+            var commandService = (EmployeeCommandService)_commandService;
+
+            if (update == null)
+                return Ok();
+
+            var message = update.Message;
+
+            bool IsCommand = false;
+
+            if (update.Type == UpdateType.CallbackQuery)
             {
-                await _employeeBot.SendTextMessageAsync(update.Message.Chat.Id, "TESTING_EMPLOYEE");
+                //var onCallback = new OnCallbackQuery();
+                //await onCallback.CallbackQueryHandle(update.CallbackQuery, _telegramBotClient);
+                return Ok();
             }
+
+            if (message == null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                return Ok();
+            }
+            foreach (TelegramCommand command in commandService.Get())
+            {
+                if (command.IsExecutionNeeded(message, _clientBot, _employeeBot, _adminBot))
+                {
+                    IsCommand = true;
+                    await command.Execute(message, _clientBot, _employeeBot, _adminBot, _context);
+                    break;
+                }
+            }
+            //if (!IsCommand)
+            //{
+            //    foreach (NoTelegramCommand command in noCommandService.Get())
+            //    {
+            //        if (command.IsExecutionNeeded(message, _telegramBotClient))
+            //        {
+            //            await command.Execute(message, _telegramBotClient);
+            //            break;
+            //        }
+            //    }
+            //}
+
             return Ok();
         }
     }

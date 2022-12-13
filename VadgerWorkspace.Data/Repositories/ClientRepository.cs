@@ -8,7 +8,7 @@ using VadgerWorkspace.Data.Entities;
 
 namespace VadgerWorkspace.Data.Repositories
 {
-    public class ClientRepository : BaseRepository<Client>
+    public class ClientRepository : BaseRepository<Data.Entities.Client>
     {
         public ClientRepository(DbContext dbContext) : base(dbContext)
         {
@@ -17,6 +17,11 @@ namespace VadgerWorkspace.Data.Repositories
         {
             _dbContext.SaveChanges();
         }
+
+        public async Task<Data.Entities.Client> GetClientByIdAsync(long Id)
+        {
+            return await FindByCondition(c => c.Id == Id).FirstOrDefaultAsync();
+        } 
 
     }
 }
