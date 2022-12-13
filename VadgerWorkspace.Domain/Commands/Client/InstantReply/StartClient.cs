@@ -32,7 +32,7 @@ namespace VadgerWorkspace.Domain.Commands.Client.InstantReply
             ClientRepository clientRepository = new ClientRepository(context);
             var clientId = message.Chat.Id;
 
-            var client = clientRepository.GetClientByIdAsync(clientId);
+            var client = await clientRepository.GetClientByIdAsync(clientId);
 
             if (client == null) {
                 clientRepository.Create(new Data.Entities.Client
