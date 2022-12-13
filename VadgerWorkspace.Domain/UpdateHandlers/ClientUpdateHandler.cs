@@ -1,60 +1,52 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Threading;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using VadgerWorkspace.Data;
-using VadgerWorkspace.Data.Entities;
 using VadgerWorkspace.Domain.Abstractions;
 using VadgerWorkspace.Domain.Services;
 
-namespace VadgerWorkspace.Web.Controllers
+namespace VadgerWorkspace.Domain.UpdateHandlers
 {
-    [ApiController]
-    [Route("/ClientBot")]
-    public class ClientBotController : Controller
+    public class ClientUpdateHandler : IUpdateHandler
     {
-        readonly IClientBot _client;
-
-        public ClientBotController(IClientBot client)
+        DbContext context = new VadgerContext();
+        public async Task Handle(ITelegramBotClient client, Update update, CancellationToken cancellationToken)
         {
-            _client = client;
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Update update, CancellationToken cancellationToken)
-        {
-            DbContext context = new VadgerContext();
             ClientCommandService commandService = new ClientCommandService();
             // NoCommandService noCommandService = (NoCommandService)_noCommandService;
 
-            if (update == null)
-                return Ok();
+            if(update == null)
+                return;
 
             var message = update.Message;
 
             bool IsCommand = false;
 
-            if (update.Type == UpdateType.CallbackQuery)
+            if(update.Type == UpdateType.CallbackQuery)
             {
                 //var onCallback = new OnCallbackQuery();
                 //await onCallback.CallbackQueryHandle(update.CallbackQuery, _telegramBotClient);
-                return Ok();
+                return;
             }
 
-            if (message == null)
+            if(message == null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                return Ok();
+                return;
             }
 
-            foreach (TelegramCommand command in commandService.Get())
+            foreach(TelegramCommand command in commandService.Get())
             {
-                if (command.IsExecutionNeeded(message, _client))
+                if(command.IsExecutionNeeded(message, client))
                 {
                     IsCommand = true;
-                    await command.Execute(message, _client, context);
+                    await command.Execute(message, client, context);
                     break;
                 }
             }
@@ -69,7 +61,6 @@ namespace VadgerWorkspace.Web.Controllers
             //        }
             //    }
             //}
-            return Ok();
         }
     }
 }

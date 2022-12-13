@@ -7,11 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\Admin\" />
-    <Folder Include="Commands\Client\" />
-    <Folder Include="Commands\Employee\" />
     <Folder Include="Services\" />
     <Folder Include="Abstractions\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Telegram.Bot" Version="18.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VadgerWorkspace.Data\VadgerWorkspace.Data.csproj" />
+    <ProjectReference Include="..\VadgerWorkspace.Infrastructure\VadgerWorkspace.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
