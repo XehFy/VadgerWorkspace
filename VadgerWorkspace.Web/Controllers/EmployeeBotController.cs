@@ -1,7 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Threading;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using VadgerWorkspace.Data;
+using VadgerWorkspace.Data.Entities;
+using VadgerWorkspace.Data.Repositories;
+using VadgerWorkspace.Domain.Abstractions;
+using VadgerWorkspace.Domain.Services;
+using VadgerWorkspace.Infrastructure;
 
 namespace VadgerWorkspace.Web.Controllers
 {
@@ -9,11 +17,17 @@ namespace VadgerWorkspace.Web.Controllers
     [Route("/EmployeeBot")]
     public class EmployeeBotController : Controller
     {
-        readonly IEmployeeBot _client;
+        readonly VadgerContext _context;
 
-        public EmployeeBotController(IEmployeeBot client)
+        readonly IAdminBot _adminBot;
+        readonly IClientBot _clientBot;
+        readonly IEmployeeBot _employeeBot;
+        private readonly ICommandService _commandService;
+        private readonly ICommandService _noCommandService;
+
+        public EmployeeBotController(IAdminBot adminBot, IClientBot clientBot, IEmployeeBot employeeBot, IEnumerable<ICommandService> commandServices, VadgerContext context)
         {
-            _client = client;
+            _clientBot = clientBot;
         }
 
         [HttpPost]
@@ -21,7 +35,7 @@ namespace VadgerWorkspace.Web.Controllers
         {
             if (update.Type == UpdateType.Message)
             {
-                await _client.SendTextMessageAsync(update.Message.Chat.Id, "TESTING_EMPLOYEE");
+                await _employeeBot.SendTextMessageAsync(update.Message.Chat.Id, "TESTING_EMPLOYEE");
             }
             return Ok();
         }

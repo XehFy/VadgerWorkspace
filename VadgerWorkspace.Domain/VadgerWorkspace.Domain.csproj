@@ -7,8 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
-    <Folder Include="Abstractions\" />
+    <Folder Include="Commands\Admin\RequiresWaiting\" />
+    <Folder Include="Commands\Admin\Waiting\" />
+    <Folder Include="Commands\Client\RequiresWaiting\" />
+    <Folder Include="Commands\Client\Waiting\" />
+    <Folder Include="Commands\Employee\RequiresWaiting\" />
+    <Folder Include="Commands\Employee\Waiting\" />
   </ItemGroup>
 
   <ItemGroup>

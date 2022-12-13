@@ -14,14 +14,15 @@ namespace VadgerWorkspace.Data
         public DbSet<Employee> Employees { get; set; }
         public DbSet<SavedMessage> Messages { get; set; }
 
-        public string DbPath { get; }
+        //public string DbPath { get; }
 
         public VadgerContext ()
         {
-            DbPath = "VadgerDb.db";
+            //DbPath = "VadgerDb.db";
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite($"Filename =C:/Users/Asus/source/repos/VadgerWorkspace/{DbPath}");
+        public VadgerContext(DbContextOptions<VadgerContext> options) : base(options) { }
+        //protected override void OnConfiguring(DbContextOptionsBuilder options)
+        //    => options.UseSqlite($"Filename =C:/Users/renat/Desktop/VadgerWorkspace{DbPath}");
     }
 }

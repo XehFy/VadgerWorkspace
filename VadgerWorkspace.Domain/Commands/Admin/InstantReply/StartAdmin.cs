@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,27 +9,29 @@ using Telegram.Bot.Types.Enums;
 using VadgerWorkspace.Domain.Abstractions;
 using VadgerWorkspace.Infrastructure.Keyboards;
 using Microsoft.EntityFrameworkCore;
+using VadgerWorkspace.Infrastructure;
 
-namespace VadgerWorkspace.Domain.Commands.Employee
+namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
 {
-    internal class StartEmployee : TelegramCommand
+    public class StartAdmin : TelegramCommand
     {
         public override string Name => @"/start";
 
-        public override bool IsExecutionNeeded(Message message, ITelegramBotClient client)
+        public override bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot)
         {
-            if(message.Type != MessageType.Text)
+            if (message.Type != MessageType.Text)
                 return false;
 
             return message.Text.Contains(Name);
         }
 
-        public override async Task Execute(Message message, ITelegramBotClient botClient, DbContext context)
+        public override async Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
-            var mes = await botClient.SendTextMessageAsync(
+            var mes = await adminBot.SendTextMessageAsync(
                 message.Chat.Id,
                 "Здесь будет указана вся инфа и инструкции по боту",
-                replyMarkup: KeyboardEmployee.Menu);
+                replyMarkup: KeyboardAdmin.Menu);
         }
+
     }
 }

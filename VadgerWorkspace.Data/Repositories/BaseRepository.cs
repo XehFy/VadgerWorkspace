@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace VadgerWorkspace.Data.Repositories
 {
-    public class BaseRepository<T> : IBaseRepository<T> where T : class
+    public class BaseRepository<T> : IDisposable, IBaseRepository<T> where T : class
     {
         protected DbContext _dbContext;
 
@@ -39,5 +39,26 @@ namespace VadgerWorkspace.Data.Repositories
         { 
             _dbContext.Set<T>().Update(entity);
         }
+
+        #region Dispose
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_dbContext != null)
+                {
+                    _dbContext.Dispose();
+                    _dbContext = null;
+                }
+            }
+        }
+
+        #endregion
     }
 }
