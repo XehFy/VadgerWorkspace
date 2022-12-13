@@ -18,5 +18,9 @@ namespace VadgerWorkspace.Data.Repositories
             _dbContext.SaveChanges();
         }
 
+        public async Task<Client> GetClientByIdAsync(long Id)
+        {
+            return await FindByCondition(client => client.Id == Id).FirstOrDefaultAsync();
+        }
     }
 }
