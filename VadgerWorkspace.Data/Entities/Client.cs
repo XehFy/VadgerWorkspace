@@ -11,7 +11,7 @@ namespace VadgerWorkspace.Data.Entities
         public long Id { get; set; }
         public string? Name { get; set; }
         public string? Town { get; set; }
-        public byte? RegistrationStage { get; set; }
+        public Stages? Stage { get; set; }
         public long? EmployeeId { get; set; }
     }
 }

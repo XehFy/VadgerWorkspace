@@ -9,6 +9,7 @@ namespace VadgerWorkspace.Data.Entities
     public class Employee
     {
         public long Id { get; set; }
+        public long ClientId { get; set; }
         public string? Name { get; set; }
         public string? Town { get; set; }
         public bool? IsAdmin { get; set; }

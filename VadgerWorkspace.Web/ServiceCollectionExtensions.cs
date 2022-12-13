@@ -8,7 +8,7 @@ namespace VadgerWorkspace.Web
             this IServiceCollection serviceCollection,
             IConfiguration configuration)
         {
-            var client = new ClientBot(configuration["RenatClientToken"]);
+            var client = new ClientBot(configuration["AndreyClientToken"]);
             var webHook = $"{configuration["Url"]}/ClientBot";
             client.SetWebhookAsync(webHook).Wait();
 
@@ -20,7 +20,7 @@ namespace VadgerWorkspace.Web
             this IServiceCollection serviceCollection,
             IConfiguration configuration)
         {
-            var client = new AdminBot(configuration["RenatAdminToken"]);
+            var client = new AdminBot(configuration["AndreyAdminToken"]);
             var webHook = $"{configuration["Url"]}/AdminBot";
             client.SetWebhookAsync(webHook).Wait();
 
@@ -32,7 +32,7 @@ namespace VadgerWorkspace.Web
             this IServiceCollection serviceCollection,
             IConfiguration configuration)
         {
-            var client = new EmployeeBot(configuration["RenatEmployeeToken"]);
+            var client = new EmployeeBot(configuration["AndreyEmployeeToken"]);
             var webHook = $"{configuration["Url"]}/EmployeeBot";
             client.SetWebhookAsync(webHook).Wait();
 
