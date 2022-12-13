@@ -2,6 +2,9 @@
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using VadgerWorkspace.Data;
+using VadgerWorkspace.Domain.Abstractions;
+using VadgerWorkspace.Infrastructure;
 
 namespace VadgerWorkspace.Web.Controllers
 {
@@ -9,11 +12,17 @@ namespace VadgerWorkspace.Web.Controllers
     [Route("/AdminBot")]
     public class AdminBotController : Controller
     {
-        readonly IAdminBot _client;
+        readonly VadgerContext _context;
 
-        public AdminBotController(IAdminBot client)
+        readonly IAdminBot _adminBot;
+        readonly IClientBot _clientBot;
+        readonly IEmployeeBot _employeeBot;
+        private readonly ICommandService _commandService;
+        private readonly ICommandService _noCommandService;
+
+        public AdminBotController(IAdminBot adminBot, IClientBot clientBot, IEmployeeBot employeeBot, IEnumerable<ICommandService> commandServices, VadgerContext context)
         {
-            _client = client;
+            _adminBot = adminBot;
         }
 
         [HttpPost]
@@ -21,7 +30,7 @@ namespace VadgerWorkspace.Web.Controllers
         {
             if (update.Type == UpdateType.Message)
             {
-                await _client.SendTextMessageAsync(update.Message.Chat.Id, "TESTING_ADMIN");
+                await _adminBot.SendTextMessageAsync(update.Message.Chat.Id, "TESTING_ADMIN");
             }
             return Ok();
         }

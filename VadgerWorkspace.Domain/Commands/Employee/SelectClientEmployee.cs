@@ -9,6 +9,7 @@ using Telegram.Bot.Types.Enums;
 using VadgerWorkspace.Domain.Abstractions;
 using VadgerWorkspace.Infrastructure.Keyboards;
 using Microsoft.EntityFrameworkCore;
+using VadgerWorkspace.Infrastructure;
 
 namespace VadgerWorkspace.Domain.Commands.Employee
 {
@@ -16,7 +17,7 @@ namespace VadgerWorkspace.Domain.Commands.Employee
     {
         public override string Name => @"Выбрать клиента";
 
-        public override bool IsExecutionNeeded(Message message, ITelegramBotClient client)
+        public override bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot)
         {
             if (message.Type != MessageType.Text)
                 return false;
@@ -24,9 +25,9 @@ namespace VadgerWorkspace.Domain.Commands.Employee
             return message.Text.Contains(Name);
         }
 
-        public override async Task Execute(Message message, ITelegramBotClient botClient, DbContext context)
+        public override async Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
-            var mes = await botClient.SendTextMessageAsync(
+            var mes = await employeeBot.SendTextMessageAsync(
                 message.Chat.Id,
                 "Mеню управления",
                 replyMarkup: SelectClientInline.SelectClient);

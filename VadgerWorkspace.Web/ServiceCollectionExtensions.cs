@@ -1,4 +1,5 @@
 ﻿using Telegram.Bot;
+using VadgerWorkspace.Infrastructure;
 
 namespace VadgerWorkspace.Web
 {
@@ -41,36 +42,5 @@ namespace VadgerWorkspace.Web
         }
     }
 
-    public interface IClientBot : ITelegramBotClient
-    {
-    }
 
-    public class ClientBot : TelegramBotClient, IClientBot
-    {
-        public ClientBot(String token, HttpClient? httpClient = null) : base(token, httpClient)
-        {
-        }
-    }
-
-    public interface IAdminBot : ITelegramBotClient
-    {
-    }
-
-    public class AdminBot : TelegramBotClient, IAdminBot
-    {
-        public AdminBot(String token, HttpClient? httpClient = null) : base(token, httpClient)
-        {
-        }
-    }
-
-    public interface IEmployeeBot : ITelegramBotClient
-    {
-    }
-
-    public class EmployeeBot : TelegramBotClient, IEmployeeBot
-    {
-        public EmployeeBot(String token, HttpClient? httpClient = null) : base(token, httpClient)
-        {
-        }
-    }
 }

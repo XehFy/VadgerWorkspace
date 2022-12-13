@@ -1,7 +1,10 @@
 using VadgerWorkspace.Web;
 using Telegram.Bot;
 using Microsoft.AspNetCore;
-
+using VadgerWorkspace.Domain.Services;
+using VadgerWorkspace.Domain.Abstractions;
+using VadgerWorkspace.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +17,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddTelegramBotClient(builder.Configuration);
 builder.Services.AddTelegramBotAdmin(builder.Configuration);
 builder.Services.AddTelegramBotEmployee(builder.Configuration);
+
+builder.Services.AddScoped<ICommandService, AdminCommandService>();
+builder.Services.AddScoped<ICommandService, ClientCommandService>();
+builder.Services.AddScoped<ICommandService, EmployeeCommandService>();
+
+builder.Services.AddDbContext<VadgerContext>(opt
+    => opt.UseSqlite($"Filename =C:/Users/renat/Desktop/VadgerWorkspace/VadgerDb.db"));
 
 var app = builder.Build();
 

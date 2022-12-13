@@ -6,13 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using VadgerWorkspace.Infrastructure;
 
 namespace VadgerWorkspace.Domain.Abstractions
 {
     public abstract class NoTelegramCommand : INorTelegramCommand
     {
-        public abstract Task Execute(Message message, ITelegramBotClient client, DbContext context);
+        public abstract Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context);
 
-        public abstract bool IsExecutionNeeded(Message message, ITelegramBotClient client);
+        public abstract bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot);
     }
 }

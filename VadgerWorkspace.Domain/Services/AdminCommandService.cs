@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using VadgerWorkspace.Domain.Abstractions;
 using VadgerWorkspace.Domain.Commands.Admin;
+using VadgerWorkspace.Domain.Commands.Admin.InstantReply;
 
 namespace VadgerWorkspace.Domain.Services
 {
-    public class AdminCommandService
+    public class AdminCommandService : ICommandService
     {
         private readonly List<INorTelegramCommand> _commands;
 
