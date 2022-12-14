@@ -11,7 +11,6 @@
     <Folder Include="Commands\Admin\Waiting\" />
     <Folder Include="Commands\Client\InstantReply\" />
     <Folder Include="Commands\Employee\RequiresWaiting\" />
-    <Folder Include="Commands\Employee\Waiting\" />
   </ItemGroup>
 
   <ItemGroup>
