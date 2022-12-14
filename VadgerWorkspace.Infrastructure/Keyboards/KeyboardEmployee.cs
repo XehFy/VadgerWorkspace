@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Types.ReplyMarkups;
+using VadgerWorkspace.Data.Entities;
 
 namespace VadgerWorkspace.Infrastructure.Keyboards
 {
@@ -42,6 +43,42 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
         {
             ResizeKeyboard = true
         };
+
+        public static InlineKeyboardButton[][] CreateChooseClientKeyboard(IEnumerable<Client> clients, Employee employee)
+        {
+            var clientList = new InlineKeyboardButton[clients.Count()/3 + 1][];
+            var clientsArr = clients.ToList();
+            
+            for (int i = 0; i < clients.Count() / 3 + 1; i++)
+            {
+                if (i == clients.Count() / 3)
+                {
+                    clientList[i] = new InlineKeyboardButton[clients.Count() - (clients.Count() / 3) * 3];
+                    for (int j = 0; j < clients.Count() - (clients.Count() / 3) * 3; j++)
+                    {
+                        clientList[i][j] = InlineKeyboardButton.WithCallbackData(clientsArr[i * 3 + j].Name, $"/StartChat {employee.Id} {clientsArr[i * 3 + j].Id}");
+                    }
+                    break;
+                }
+                else 
+                {
+                    clientList[i] = new InlineKeyboardButton[3];
+                }
+                for (int j = 0; j < 3; j++)
+                {
+                    clientList[i][j] = InlineKeyboardButton.WithCallbackData(clientsArr[i * 3 + j].Name, $"/StartChat {employee.Id} {clientsArr[i * 3 + j].Id}");
+                }
+            }
+            clientsArr.Clear();
+
+            return clientList;
+            //foreach (var employee in employees)
+            //{
+            //    employeeList[i] = InlineKeyboardButton.WithCallbackData(employee.Name.ToString(), $"/chooseEmp {employee.Id} {client.Id}");
+            //    i++;
+            //}
+            //return employeeList;
+        }
 
         public static ReplyKeyboardRemove Empty = new ReplyKeyboardRemove();
     }

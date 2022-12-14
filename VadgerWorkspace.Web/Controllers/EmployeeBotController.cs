@@ -8,6 +8,7 @@ using VadgerWorkspace.Data;
 using VadgerWorkspace.Data.Entities;
 using VadgerWorkspace.Data.Repositories;
 using VadgerWorkspace.Domain.Abstractions;
+using VadgerWorkspace.Domain.Commands.Employee;
 using VadgerWorkspace.Domain.Services;
 using VadgerWorkspace.Infrastructure;
 
@@ -51,14 +52,14 @@ namespace VadgerWorkspace.Web.Controllers
 
             if (update.Type == UpdateType.CallbackQuery)
             {
-                //var onCallback = new OnCallbackQuery();
-                //await onCallback.CallbackQueryHandle(update.CallbackQuery, _telegramBotClient);
+                var onCallback = new OnCallbackQueryEmployee();
+                await onCallback.CallbackQueryEmployeeHandle(update.CallbackQuery, _clientBot, _employeeBot, _adminBot, _context);
                 return Ok();
             }
 
             if (message == null)
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                //cancellationToken.ThrowIfCancellationRequested();
                 return Ok();
             }
             foreach (TelegramCommand command in commandService.Get())

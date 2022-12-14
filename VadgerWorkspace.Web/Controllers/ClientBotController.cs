@@ -59,7 +59,7 @@ namespace VadgerWorkspace.Web.Controllers
 
             if (message == null)
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                //cancellationToken.ThrowIfCancellationRequested();
                 return Ok();
             }
             foreach (TelegramCommand command in commandService.Get())

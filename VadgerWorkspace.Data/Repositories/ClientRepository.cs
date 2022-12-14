@@ -27,5 +27,10 @@ namespace VadgerWorkspace.Data.Repositories
         {
             return _dbContext.Set<Client>().FirstOrDefault(o => o.Id == id);
         }
+
+        public async Task<IEnumerable<Client>> GetAllClientsForEmployee(long employeeId)
+        {
+            return await Task.FromResult(FindByCondition(client => client.EmployeeId == employeeId));
+        }
     }
 }

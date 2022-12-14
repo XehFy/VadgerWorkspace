@@ -40,6 +40,9 @@ namespace VadgerWorkspace.Domain.Commands.Admin
                     clientRepository.Dispose();
 
                     break;
+
+                default:
+                    break;
             }
         }
     }
