@@ -45,5 +45,13 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
             ResizeKeyboard = true
         };
 
+        public static ReplyKeyboardMarkup Empty = new ReplyKeyboardMarkup(new[]
+        {
+            new KeyboardButton[] { }
+        })
+        {
+            ResizeKeyboard = true
+        };
+
     }
 }

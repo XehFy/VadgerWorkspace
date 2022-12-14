@@ -11,8 +11,8 @@ using VadgerWorkspace.Data;
 namespace VadgerWorkspace.Data.Migrations
 {
     [DbContext(typeof(VadgerContext))]
-    [Migration("20221213182613_stage")]
-    partial class stage
+    [Migration("20221214020023_StageEmpl")]
+    partial class StageEmpl
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,7 +29,13 @@ namespace VadgerWorkspace.Data.Migrations
                     b.Property<long?>("EmployeeId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<long?>("Link")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Service")
                         .HasColumnType("TEXT");
 
                     b.Property<byte?>("Stage")
@@ -60,6 +66,9 @@ namespace VadgerWorkspace.Data.Migrations
 
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
+
+                    b.Property<byte>("Stage")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Town")
                         .HasColumnType("TEXT");

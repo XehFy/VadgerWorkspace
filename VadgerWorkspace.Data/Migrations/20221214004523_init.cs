@@ -18,7 +18,8 @@ namespace VadgerWorkspace.Data.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
                     Town = table.Column<string>(type: "TEXT", nullable: true),
-                    RegistrationStage = table.Column<byte>(type: "INTEGER", nullable: true),
+                    Service = table.Column<string>(type: "TEXT", nullable: true),
+                    Stage = table.Column<byte>(type: "INTEGER", nullable: true),
                     EmployeeId = table.Column<long>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
@@ -32,6 +33,7 @@ namespace VadgerWorkspace.Data.Migrations
                 {
                     Id = table.Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    ClientId = table.Column<long>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
                     Town = table.Column<string>(type: "TEXT", nullable: true),
                     IsAdmin = table.Column<bool>(type: "INTEGER", nullable: true),

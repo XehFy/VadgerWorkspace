@@ -22,5 +22,10 @@ namespace VadgerWorkspace.Data.Repositories
         {
             return await FindByCondition(client => client.Id == Id).FirstOrDefaultAsync();
         }
+
+        public Client GetClientByIdSync(long id)
+        {
+            return _dbContext.Set<Client>().FirstOrDefault(o => o.Id == id);
+        }
     }
 }

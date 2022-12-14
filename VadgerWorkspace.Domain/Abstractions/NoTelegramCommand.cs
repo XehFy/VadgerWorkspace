@@ -14,6 +14,6 @@ namespace VadgerWorkspace.Domain.Abstractions
     {
         public abstract Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context);
 
-        public abstract bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot);
+        public abstract bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context);
     }
 }

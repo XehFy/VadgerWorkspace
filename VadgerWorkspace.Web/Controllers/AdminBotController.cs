@@ -61,7 +61,7 @@ namespace VadgerWorkspace.Web.Controllers
             }
             foreach (TelegramCommand command in commandService.Get())
             {
-                if (command.IsExecutionNeeded(message, _clientBot, _employeeBot, _adminBot))
+                if (command.IsExecutionNeeded(message, _clientBot, _employeeBot, _adminBot, _context))
                 {
                     IsCommand = true;
                     await command.Execute(message, _clientBot, _employeeBot, _adminBot, _context);

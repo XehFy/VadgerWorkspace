@@ -19,7 +19,7 @@ namespace VadgerWorkspace.Domain.Commands.Client.InstantReply
     {
         public override string Name => @"/start";
 
-        public override bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot)
+        public override bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
             if (message.Type != MessageType.Text)
                 return false;
@@ -34,18 +34,27 @@ namespace VadgerWorkspace.Domain.Commands.Client.InstantReply
 
             var client = await clientRepository.GetClientByIdAsync(clientId);
 
-            if (client == null) {
+            if (client == null)
+            {
                 clientRepository.Create(new Data.Entities.Client
                 {
                     Name = message.Chat.FirstName,
                     Id = message.Chat.Id,
-                    Stage = Data.Stages.starting
+                    Stage = Data.Stages.SelectService,
+                    Link = message.Chat.LinkedChatId,
                 });
                 await clientRepository.SaveAsync();
             }
+            else
+            {
+                client.Stage = Data.Stages.SelectService;
+                clientRepository.Update(client);
+                await clientRepository.SaveAsync();
+                
+            }
             clientRepository.Dispose();
 
-            string text = $"Здравствуйте, {message.Chat.FirstName} ! \r\n⚡️Компания «VadGer» оказывает комплексную помощь в решении задач и проблем при релокации в Montenegro 🇲🇪 \r\n💫Команда нашего шутер-агентства – это экспаты, проживающие в Черногории уже более 10 лет и владеющие ценными опытом. \r\n ✉️Выберете желаемую услугу";
+            string text = $"Здравствуйте, {message.Chat.FirstName} ! \r\n⚡️Компания «VadGer» оказывает комплексную помощь в решении задач и проблем при релокации в Montenegro 🇲🇪 \r\n💫Команда нашего шутер-агентства – это экспаты, проживающие в Черногории уже более 10 лет и владеющие ценными опытом. \r\n ✉️Выберете желаемую услугу из предложенных или опишите запрос";
             var mes = await clientBot.SendTextMessageAsync(message.Chat.Id, text, replyMarkup: KeyboardClient.SelectService);
 
         }

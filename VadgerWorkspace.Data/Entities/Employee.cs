@@ -14,7 +14,7 @@ namespace VadgerWorkspace.Data.Entities
         public string? Town { get; set; }
         public bool? IsAdmin { get; set; }
         public bool? IsVerified { get; set; }
+        public Stages Stage { get; set; }
 
-        //public ICollection<Client> Clients { get; set; }
     }
 }

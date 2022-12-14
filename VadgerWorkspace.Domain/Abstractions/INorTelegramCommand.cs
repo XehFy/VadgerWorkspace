@@ -13,6 +13,6 @@ namespace VadgerWorkspace.Domain.Abstractions
     public interface INorTelegramCommand
     {
         Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot,IAdminBot adminBot, DbContext context);
-        bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot);
+        bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context);
     }
 }

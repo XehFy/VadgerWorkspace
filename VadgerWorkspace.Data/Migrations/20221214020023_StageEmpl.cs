@@ -5,35 +5,25 @@
 namespace VadgerWorkspace.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Stages : Migration
+    public partial class StageEmpl : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "RegistrationStage",
-                table: "Clients",
-                newName: "Stage");
-
-            migrationBuilder.AddColumn<long>(
-                name: "ClientId",
+            migrationBuilder.AddColumn<byte>(
+                name: "Stage",
                 table: "Employees",
                 type: "INTEGER",
                 nullable: false,
-                defaultValue: 0L);
+                defaultValue: (byte)0);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "ClientId",
-                table: "Employees");
-
-            migrationBuilder.RenameColumn(
                 name: "Stage",
-                table: "Clients",
-                newName: "RegistrationStage");
+                table: "Employees");
         }
     }
 }

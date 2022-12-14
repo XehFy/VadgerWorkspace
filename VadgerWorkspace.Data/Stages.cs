@@ -12,6 +12,7 @@ namespace VadgerWorkspace.Data
         SelectService = 1,
         SelectTown = 2,
         Descriptioning = 3,
-        Chating = 4,
+        Waiting = 4,
+        Chating = 5,
     }
 }

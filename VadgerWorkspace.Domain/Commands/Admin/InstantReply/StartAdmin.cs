@@ -17,7 +17,7 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
     {
         public override string Name => @"/start";
 
-        public override bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot)
+        public override bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
             if (message.Type != MessageType.Text)
                 return false;

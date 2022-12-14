@@ -11,7 +11,7 @@ using VadgerWorkspace.Data;
 namespace VadgerWorkspace.Data.Migrations
 {
     [DbContext(typeof(VadgerContext))]
-    [Migration("20221212233633_init")]
+    [Migration("20221214004523_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -32,7 +32,10 @@ namespace VadgerWorkspace.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
-                    b.Property<byte?>("RegistrationStage")
+                    b.Property<string>("Service")
+                        .HasColumnType("TEXT");
+
+                    b.Property<byte?>("Stage")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Town")
@@ -47,6 +50,9 @@ namespace VadgerWorkspace.Data.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("ClientId")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool?>("IsAdmin")
