@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Types.ReplyMarkups;
+using VadgerWorkspace.Data.Entities;
 
 namespace VadgerWorkspace.Infrastructure.Keyboards
 {
@@ -40,5 +41,17 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
         {
             ResizeKeyboard = true
         };
+
+        public static InlineKeyboardButton[] CreateChooseEmployeeKeyboard(IEnumerable<Employee> employees, Client client)
+        {
+            var employeeList = new InlineKeyboardButton[employees.Count()];
+            int i = 0;
+            foreach (var employee in employees)
+            {
+                employeeList[i] = InlineKeyboardButton.WithCallbackData(employee.Name.ToString(), $"/chooseEmp {employee.Id} {client.Id}");
+                i++;
+            }
+            return employeeList;
+        }
     }
 }

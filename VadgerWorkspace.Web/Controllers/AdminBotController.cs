@@ -8,6 +8,7 @@ using VadgerWorkspace.Data;
 using VadgerWorkspace.Data.Entities;
 using VadgerWorkspace.Data.Repositories;
 using VadgerWorkspace.Domain.Abstractions;
+using VadgerWorkspace.Domain.Commands.Admin;
 using VadgerWorkspace.Domain.Services;
 using VadgerWorkspace.Infrastructure;
 
@@ -28,6 +29,7 @@ namespace VadgerWorkspace.Web.Controllers
         public AdminBotController(IAdminBot adminBot, IClientBot clientBot, IEmployeeBot employeeBot, IEnumerable<ICommandService> commandServices, VadgerContext context)
         {
             _commandService = commandServices.First(o => o.GetType() == typeof(AdminCommandService));
+            _noCommandService = commandServices.First(o => o.GetType() == typeof(AdminNoCommandService));
             _clientBot = clientBot;
             _adminBot = adminBot;
             _employeeBot = employeeBot;
@@ -39,6 +41,7 @@ namespace VadgerWorkspace.Web.Controllers
         public async Task<IActionResult> Post([FromBody] Update update, CancellationToken cancellationToken)
         {
             var commandService = (AdminCommandService)_commandService;
+            var noCommandService = (AdminNoCommandService)_noCommandService;
 
             if (update == null)
                 return Ok();
@@ -49,8 +52,8 @@ namespace VadgerWorkspace.Web.Controllers
 
             if (update.Type == UpdateType.CallbackQuery)
             {
-                //var onCallback = new OnCallbackQuery();
-                //await onCallback.CallbackQueryHandle(update.CallbackQuery, _telegramBotClient);
+                var onCallback = new OnCallbackQueryAdmin();
+                await onCallback.CallbackQueryAdminHandle(update.CallbackQuery,_clientBot, _employeeBot, _adminBot, _context);
                 return Ok();
             }
 
@@ -68,17 +71,17 @@ namespace VadgerWorkspace.Web.Controllers
                     break;
                 }
             }
-            //if (!IsCommand)
-            //{
-            //    foreach (NoTelegramCommand command in noCommandService.Get())
-            //    {
-            //        if (command.IsExecutionNeeded(message, _telegramBotClient))
-            //        {
-            //            await command.Execute(message, _telegramBotClient);
-            //            break;
-            //        }
-            //    }
-            //}
+            if (!IsCommand)
+            {
+                foreach (NoTelegramCommand command in noCommandService.Get())
+                {
+                    if (command.IsExecutionNeeded(message, _clientBot, _employeeBot, _adminBot, _context))
+                    {
+                        await command.Execute(message, _clientBot, _employeeBot, _adminBot, _context);
+                        break;
+                    }
+                }
+            }
 
             return Ok();
         }

@@ -11,6 +11,7 @@ using VadgerWorkspace.Domain.Abstractions;
 using VadgerWorkspace.Infrastructure.Keyboards;
 using Microsoft.EntityFrameworkCore;
 using VadgerWorkspace.Infrastructure;
+using VadgerWorkspace.Data.Repositories;
 
 namespace VadgerWorkspace.Domain.Commands.Employee.InstantReply
 {
@@ -28,9 +29,33 @@ namespace VadgerWorkspace.Domain.Commands.Employee.InstantReply
 
         public override async Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
+            EmployeeRepository employeeRepository = new EmployeeRepository(context);
+            var employeeId = message.Chat.Id;
+
+            var client = await employeeRepository.GetEmployeeByIdAsync(employeeId);
+
+            if (client == null)
+            {
+                employeeRepository.Create(new Data.Entities.Employee
+                {
+                    Name = message.Chat.FirstName,
+                    Id = message.Chat.Id,
+                    Stage = Data.Stages.SelectService
+                }); 
+                await employeeRepository.SaveAsync();
+            }
+            else
+            {
+                client.Stage = Data.Stages.SelectService;
+                employeeRepository.Update(client);
+                await employeeRepository.SaveAsync();
+            }
+            employeeRepository.Dispose();
+
+
             var mes = await employeeBot.SendTextMessageAsync(
                 message.Chat.Id,
-                "Здесь будет указана вся инфа и инструкции по боту",
+                "Вы зарегистрировались как работник",
                 replyMarkup: KeyboardEmployee.Menu);
         }
     }

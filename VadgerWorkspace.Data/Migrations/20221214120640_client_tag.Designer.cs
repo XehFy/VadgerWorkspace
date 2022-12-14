@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VadgerWorkspace.Data;
 
@@ -10,9 +11,11 @@ using VadgerWorkspace.Data;
 namespace VadgerWorkspace.Data.Migrations
 {
     [DbContext(typeof(VadgerContext))]
-    partial class VadgerContextModelSnapshot : ModelSnapshot
+    [Migration("20221214120640_client_tag")]
+    partial class clienttag
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.0");
@@ -37,6 +40,9 @@ namespace VadgerWorkspace.Data.Migrations
 
                     b.Property<byte?>("Stage")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Tag")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Town")
                         .HasColumnType("TEXT");
@@ -81,17 +87,14 @@ namespace VadgerWorkspace.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<long?>("ClientId")
+                    b.Property<long>("ClientId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long?>("EmployeeId")
+                    b.Property<long>("EmployeeId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool?>("IsFromClient")
+                    b.Property<bool>("IsFromClient")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 

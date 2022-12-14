@@ -12,13 +12,12 @@ using Microsoft.EntityFrameworkCore;
 using VadgerWorkspace.Data.Repositories;
 using VadgerWorkspace.Data.Entities;
 using VadgerWorkspace.Infrastructure;
+using Telegram.Bot.Types.ReplyMarkups;
 
-namespace VadgerWorkspace.Domain.Commands.Client.InstantReply
+namespace VadgerWorkspace.Domain.Commands.Client.Waiting
 {
-    public class SelectTownClient : TelegramCommand
+    public class SelectTownClient : NoTelegramCommand
     {
-        public override string Name => @"/selectTown";
-
         public override bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
             if (message.Type != MessageType.Text)
@@ -33,7 +32,7 @@ namespace VadgerWorkspace.Domain.Commands.Client.InstantReply
             if (client == null) return false;
 
 
-            return (client.Stage == Data.Stages.SelectTown);
+            return client.Stage == Data.Stages.SelectTown;
         }
 
         public override async Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
@@ -47,22 +46,34 @@ namespace VadgerWorkspace.Domain.Commands.Client.InstantReply
             clientRepository.Update(client);
             await clientRepository.SaveAsync();
 
-            clientRepository.Dispose();
+            //clientRepository.Dispose();
 
             string text = $"Ваша заявка отправлена. Пожалуйста ожидайте ответа нашего сотрудника";
             var mes = await clientBot.SendTextMessageAsync(message.Chat.Id, text, replyMarkup: KeyboardClient.Empty);
 
             string TownsEmpl = "Будва Тиват Котор";
 
-            string requestDesc = $"Поступила заявка от: {client.Name}! \n Услуга: {client.Service} \n Город: {client.Town}";
-            if (client.Town.Contains(TownsEmpl))
+            string requestDesc = $"Поступила заявка от: {client.Name}! \n Услуга: {client.Service} \n Город: {client.Town}\n Выберите работника:";
+            //Здесь отправка инлайна с работниками и этим клиентом админу
+            EmployeeRepository employeeRepository = new EmployeeRepository(context);
+            var employees = employeeRepository.FindAll();
+            var admins = employeeRepository.GetAllAdmins();
+            var empKeyboard = KeyboardAdmin.CreateChooseEmployeeKeyboard(employees, client);
+            foreach(var admin in admins)
             {
-                await employeeBot.SendTextMessageAsync(367867842, requestDesc, replyMarkup: KeyboardClient.Empty);
+                 await adminBot.SendTextMessageAsync(admin.Id, requestDesc, replyMarkup: new InlineKeyboardMarkup(empKeyboard));
             }
-            else
-            {
-                await employeeBot.SendTextMessageAsync(5569437487, requestDesc, replyMarkup: KeyboardClient.Empty);
-            }
+            
+
+
+            //if (client.Town.Contains(TownsEmpl))
+            //{
+            //    await employeeBot.SendTextMessageAsync(367867842, requestDesc, replyMarkup: KeyboardClient.Empty);
+            //}
+            //else
+            //{
+            //    await employeeBot.SendTextMessageAsync(5569437487, requestDesc, replyMarkup: KeyboardClient.Empty);
+            //}
 
         }
     }

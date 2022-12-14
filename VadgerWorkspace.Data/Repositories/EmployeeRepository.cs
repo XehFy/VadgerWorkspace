@@ -13,5 +13,20 @@ namespace VadgerWorkspace.Data.Repositories
         public EmployeeRepository(DbContext dbContext) : base(dbContext)
         {
         }
+
+        public async Task<Employee> GetEmployeeByIdAsync(long Id)
+        {
+            return await FindByCondition(employee => employee.Id == Id).FirstOrDefaultAsync();
+        }
+
+        public Employee GetEmployeeByIdSync(long id)
+        {
+            return _dbContext.Set<Employee>().FirstOrDefault(o => o.Id == id);
+        }
+
+        public IEnumerable<Employee> GetAllAdmins()
+        {
+            return FindByCondition(employee => employee.IsAdmin == true);
+        }
     }
 }

@@ -13,12 +13,10 @@ using VadgerWorkspace.Data.Repositories;
 using VadgerWorkspace.Data.Entities;
 using VadgerWorkspace.Infrastructure;
 
-namespace VadgerWorkspace.Domain.Commands.Client.InstantReply
+namespace VadgerWorkspace.Domain.Commands.Client.Waiting
 {
-    public class SelectServiceClient : TelegramCommand
+    public class SelectServiceClient : NoTelegramCommand
     {
-        public override string Name => @"/selectService";
-
         public override bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
             if (message.Type != MessageType.Text)
@@ -33,7 +31,7 @@ namespace VadgerWorkspace.Domain.Commands.Client.InstantReply
             if (client == null) return false;
 
 
-            return (client.Stage == Data.Stages.SelectService);
+            return client.Stage == Data.Stages.SelectService;
         }
 
         public override async Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)

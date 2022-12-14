@@ -13,7 +13,7 @@ using VadgerWorkspace.Data.Repositories;
 using VadgerWorkspace.Data.Entities;
 using VadgerWorkspace.Infrastructure;
 
-namespace VadgerWorkspace.Domain.Commands.Client.InstantReply
+namespace VadgerWorkspace.Domain.Commands.Client.RequiresWaiting
 {
     public class StartClient : TelegramCommand
     {
@@ -42,7 +42,7 @@ namespace VadgerWorkspace.Domain.Commands.Client.InstantReply
                     Id = message.Chat.Id,
                     Stage = Data.Stages.SelectService,
                     Link = message.Chat.LinkedChatId,
-                });
+                }); 
                 await clientRepository.SaveAsync();
             }
             else
@@ -50,7 +50,7 @@ namespace VadgerWorkspace.Domain.Commands.Client.InstantReply
                 client.Stage = Data.Stages.SelectService;
                 clientRepository.Update(client);
                 await clientRepository.SaveAsync();
-                
+
             }
             clientRepository.Dispose();
 

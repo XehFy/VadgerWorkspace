@@ -4,21 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VadgerWorkspace.Domain.Abstractions;
-using VadgerWorkspace.Domain.Commands.Client;
-//using VadgerWorkspace.Domain.Commands.Client.InstantReply;
-using VadgerWorkspace.Domain.Commands.Client.RequiresWaiting;
 
 namespace VadgerWorkspace.Domain.Services
 {
-    public class ClientCommandService : ICommandService
+    public class AdminNoCommandService : ICommandService
     {
         private readonly List<INorTelegramCommand> _commands;
 
-        public ClientCommandService()
+        public AdminNoCommandService()
         {
             _commands = new List<INorTelegramCommand>
             {
-                new StartClient(),
+
             };
         }
 

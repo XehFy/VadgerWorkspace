@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VadgerWorkspace.Data;
 
@@ -10,9 +11,11 @@ using VadgerWorkspace.Data;
 namespace VadgerWorkspace.Data.Migrations
 {
     [DbContext(typeof(VadgerContext))]
-    partial class VadgerContextModelSnapshot : ModelSnapshot
+    [Migration("20221214151153_message_text")]
+    partial class messagetext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.0");

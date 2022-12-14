@@ -22,8 +22,12 @@ builder.Services.AddScoped<ICommandService, AdminCommandService>();
 builder.Services.AddScoped<ICommandService, ClientCommandService>();
 builder.Services.AddScoped<ICommandService, EmployeeCommandService>();
 
+builder.Services.AddScoped<ICommandService, AdminNoCommandService>();
+builder.Services.AddScoped<ICommandService, ClientNoCommandService>();
+builder.Services.AddScoped<ICommandService, EmployeeNoCommandService>();
+
 builder.Services.AddDbContext<VadgerContext>(opt
-    => opt.UseSqlite($"Filename =C:/Users/Asus/source/repos/VadgerWorkspace/VadgerDb.db"));
+    => opt.UseSqlite($"Filename =C:/Users/renat/Desktop/VadgerWorkspace/VadgerDb.db"));
 
 var app = builder.Build();
 
