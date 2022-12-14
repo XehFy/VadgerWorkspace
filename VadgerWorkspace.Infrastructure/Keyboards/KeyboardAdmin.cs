@@ -53,5 +53,7 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
             }
             return employeeList;
         }
+
+        public static ReplyKeyboardRemove Empty = new ReplyKeyboardRemove();
     }
 }

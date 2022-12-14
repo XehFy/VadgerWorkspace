@@ -42,5 +42,7 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
         {
             ResizeKeyboard = true
         };
+
+        public static ReplyKeyboardRemove Empty = new ReplyKeyboardRemove();
     }
 }

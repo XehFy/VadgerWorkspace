@@ -11,8 +11,10 @@ namespace VadgerWorkspace.Domain.Services
         {
             _commands = new List<INorTelegramCommand>
             {
+                new WaitingClient(),
                 new SelectServiceClient(),
-                new SelectTownClient()
+                new SelectTownClient(),
+                
             };
         }
 

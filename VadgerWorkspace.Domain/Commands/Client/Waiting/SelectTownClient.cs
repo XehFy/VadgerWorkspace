@@ -42,13 +42,13 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
 
             var client = clientRepository.GetClientByIdSync(clientId);
             client.Town = message.Text;
-            client.Stage = Data.Stages.Chating;
+            client.Stage = Data.Stages.Waiting;
             clientRepository.Update(client);
             await clientRepository.SaveAsync();
 
             //clientRepository.Dispose();
 
-            string text = $"Ваша заявка отправлена. Пожалуйста ожидайте ответа нашего сотрудника";
+            string text = $"Ваша заявка отправлена.";
             var mes = await clientBot.SendTextMessageAsync(message.Chat.Id, text, replyMarkup: KeyboardClient.Empty);
 
             string TownsEmpl = "Будва Тиват Котор";
