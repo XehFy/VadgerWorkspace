@@ -19,6 +19,7 @@ namespace VadgerWorkspace.Domain.Services
             {
                 new StartAdmin(),
                 new ManagementAdmin(),
+                new ShowMessages(),
             };
         }
 

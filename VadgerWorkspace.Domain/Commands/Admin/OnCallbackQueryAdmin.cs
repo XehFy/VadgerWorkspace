@@ -5,10 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 using VadgerWorkspace.Data;
 using VadgerWorkspace.Data.Entities;
 using VadgerWorkspace.Data.Repositories;
 using VadgerWorkspace.Infrastructure;
+using VadgerWorkspace.Infrastructure.Keyboards;
 
 namespace VadgerWorkspace.Domain.Commands.Admin
 {
@@ -20,30 +22,99 @@ namespace VadgerWorkspace.Domain.Commands.Admin
             switch (cbargs[0])
             {
                 case "/chooseEmp":
-                    ClientRepository clientRepository = new ClientRepository(context);
-                    var employeeId = Convert.ToInt64(cbargs[1]);
-                    var clientId = Convert.ToInt64(cbargs[2]);
 
-                    var client = clientRepository.GetClientByIdSync(clientId);
-                    client.EmployeeId = employeeId;
-                    clientRepository.Update(client);
-                    var request = $"Вам назначен клиент:\n {client.Name}, {client.Town}\n{client.Service}";
+                    await ChooseEmp(cbargs, query, clientBot, employeeBot, adminBot, context);
 
-                    MessageRepository messageRepository = new MessageRepository(context);
-                    messageRepository.Create(new SavedMessage { ClientId = clientId, EmployeeId = employeeId, IsFromClient = false, Text = request });
+                    break;
 
-                    await clientRepository.SaveAsync();
+                case "/chooseEmpMess":
 
-                    await employeeBot.SendTextMessageAsync(employeeId, request);
-                    // В перспективе тут надо обновить сообщения у админов шобы тупа убрать инлайн клаву
+                    await ChooseMessEmp(cbargs, query, clientBot, employeeBot, adminBot, context);
 
-                    clientRepository.Dispose();
+                    break;
+
+                case "/chooseMessClient":
+
+                    await ChooseMessClient(cbargs, query, clientBot, employeeBot, adminBot, context);
 
                     break;
 
                 default:
                     break;
             }
+        }
+
+        public async Task ChooseEmp(string[] cbargs, CallbackQuery query, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, VadgerContext context)
+        {
+            ClientRepository clientRepository = new ClientRepository(context);
+            var employeeId = Convert.ToInt64(cbargs[1]);
+            var clientId = Convert.ToInt64(cbargs[2]);
+
+            var client = clientRepository.GetClientByIdSync(clientId);
+            client.EmployeeId = employeeId;
+            clientRepository.Update(client);
+            var request = $"Вам назначен клиент:\n {client.Name}, {client.Town}\n{client.Service}";
+
+            MessageRepository messageRepository = new MessageRepository(context);
+            messageRepository.Create(new SavedMessage { ClientId = clientId, EmployeeId = employeeId, IsFromClient = false, Text = request });
+
+            await clientRepository.SaveAsync();
+
+            await employeeBot.SendTextMessageAsync(employeeId, request);
+            // В перспективе тут надо обновить сообщения у админов шобы тупа убрать инлайн клаву
+
+            clientRepository.Dispose();
+        }
+
+        public async Task ChooseMessClient(string[] cbargs, CallbackQuery query, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, VadgerContext context)
+        {
+            // учитывать также employeeId
+            //var employeeId = Convert.ToInt64(cbargs[1]);
+
+            ClientRepository clientRepository = new ClientRepository(context);
+            var clientId = Convert.ToInt64(cbargs[2]);
+            var client = clientRepository.GetClientByIdSync(clientId);
+
+            MessageRepository messageRepository = new MessageRepository(context);
+            var messages = await messageRepository.GetAllMessagesByClientId(clientId);
+
+            //var messArr = new List<string>();
+            string ToSend = "";
+            foreach(SavedMessage mess in messages)
+            {
+                string name = "сотрудник";
+                if ((bool)mess.IsFromClient)
+                {
+                    name = client.Name;
+                }
+                string newMess = $"{name}:\n'{mess.Text}'\n\n";
+                ToSend += newMess;
+            }
+
+            //for(int i = 0; i< messArr.Count(); i++)
+            //{
+
+            //}
+
+            await adminBot.SendTextMessageAsync(query.Message.Chat.Id, ToSend);
+            // В перспективе тут надо обновить сообщения у админов шобы тупа убрать инлайн клаву
+
+            clientRepository.Dispose();
+        }
+
+        public async Task ChooseMessEmp(string[] cbargs, CallbackQuery query, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, VadgerContext context)
+        {
+            ClientRepository clientRepository = new ClientRepository(context);
+            var employeeId = Convert.ToInt64(cbargs[1]);
+
+            var clients = await clientRepository.GetAllClientsForEmployee(employeeId);
+
+            var keyBoard = KeyboardAdmin.CreateChooseClienMessagetKeyboard(clients, employeeId);
+
+            await adminBot.SendTextMessageAsync(query.Message.Chat.Id, "выберете сотрудника:", replyMarkup: new InlineKeyboardMarkup(keyBoard));
+            // В перспективе тут надо обновить сообщения у админов шобы тупа убрать инлайн клаву
+
+            clientRepository.Dispose();
         }
     }
 }
