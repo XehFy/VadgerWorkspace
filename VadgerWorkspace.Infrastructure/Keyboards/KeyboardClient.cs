@@ -37,9 +37,7 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
 
         public static ReplyKeyboardMarkup Menu = new ReplyKeyboardMarkup(new[]
         {
-            new KeyboardButton[] {"Запись сейчас", "Запись в календарь"},
-            new KeyboardButton[] {"Получить PDF дневника", "Прочитать записи за день"},
-            new KeyboardButton[] {"Напомнить пароль"},
+            new KeyboardButton[] {"Заказать услугу"},
         })
         {
             ResizeKeyboard = true

@@ -39,9 +39,23 @@ namespace VadgerWorkspace.Domain.Commands.Admin
 
                     break;
 
+                case "/GetClientLink":
+                    await ChooseClientLink(cbargs, query, clientBot, employeeBot, adminBot, context);
+                    
+                    break;
+
                 default:
                     break;
             }
+        }
+
+        public async Task ChooseClientLink(string[] cbargs, CallbackQuery query, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, VadgerContext context)
+        {
+            ClientRepository clientRepository = new ClientRepository(context);
+            var clientId = Convert.ToInt64(cbargs[1]);
+            var client  = await clientRepository.GetClientByIdAsync(clientId);
+            await adminBot.SendTextMessageAsync(query.Message.Chat.Id, $"[{client.Name}](tg://user?id={client.Id})", parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2);
+            clientRepository.Dispose();
         }
 
         public async Task ChooseEmp(string[] cbargs, CallbackQuery query, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, VadgerContext context)
@@ -51,17 +65,35 @@ namespace VadgerWorkspace.Domain.Commands.Admin
             var clientId = Convert.ToInt64(cbargs[2]);
 
             var client = clientRepository.GetClientByIdSync(clientId);
-            client.EmployeeId = employeeId;
-            clientRepository.Update(client);
-            var request = $"Вам назначен клиент:\n {client.Name}, {client.Town}\n{client.Service}";
 
-            MessageRepository messageRepository = new MessageRepository(context);
-            messageRepository.Create(new SavedMessage { ClientId = clientId, EmployeeId = employeeId, IsFromClient = false, Text = request });
+            if (client.EmployeeId == 0 || client.EmployeeId == null)
+            {
+                client.EmployeeId = employeeId;
+                clientRepository.Update(client);
+                var request = $"Вам назначен клиент:\n {client.Name}, {client.Town}\n{client.Service}";
 
-            await clientRepository.SaveAsync();
+                MessageRepository messageRepository = new MessageRepository(context);
+                messageRepository.Create(new SavedMessage { ClientId = clientId, EmployeeId = employeeId, IsFromClient = false, Text = request });
 
-            await employeeBot.SendTextMessageAsync(employeeId, request);
+                await clientRepository.SaveAsync();
+
+                await employeeBot.SendTextMessageAsync(employeeId, request);
+            }
+            else
+            {
+                EmployeeRepository employeeRepository = new EmployeeRepository(context);
+                var employee = await employeeRepository.GetEmployeeByIdAsync((long)client.EmployeeId);
+                await adminBot.EditMessageTextAsync(query.Message.Chat.Id, query.Message.MessageId,$"{employee.Name} уже был назначен кем-то на этот заказ", replyMarkup: null);
+            }
             // В перспективе тут надо обновить сообщения у админов шобы тупа убрать инлайн клаву
+            //EmployeeRepository employeeRepository = new EmployeeRepository(context);
+            //var admins = employeeRepository.GetAllAdmins();
+            //var adminMadeChoose = admins.Where(a => a.Id == query.Message.Chat.Id).FirstOrDefault();
+            //var choosenEmplooye = await employeeRepository.GetEmployeeByIdAsync(employeeId);
+            //foreach (var admin in admins)
+            //{
+            //    await adminBot.EditMessageTextAsync(admin.Id, query.Message.MessageId, $"Админ {adminMadeChoose.Name}, назначил работника {choosenEmplooye.Name} на этот заказ", replyMarkup: null);
+            //}
 
             clientRepository.Dispose();
         }

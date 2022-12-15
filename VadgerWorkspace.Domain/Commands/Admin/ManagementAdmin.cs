@@ -30,7 +30,7 @@ namespace VadgerWorkspace.Domain.Commands.Admin
             var mes = await adminBot.SendTextMessageAsync(
                 message.Chat.Id,
                 "Mеню управления",
-                replyMarkup: KeyboardAdmin.Management);
+                replyMarkup: KeyboardAdmin.Menu);
         }
     }
 }

@@ -13,7 +13,7 @@ using VadgerWorkspace.Data.Repositories;
 using VadgerWorkspace.Data.Entities;
 using VadgerWorkspace.Infrastructure;
 
-namespace VadgerWorkspace.Domain.Commands.Client.RequiresWaiting
+namespace VadgerWorkspace.Domain.Commands.Client.InstantReply
 {
     public class StartClient : TelegramCommand
     {
@@ -40,22 +40,25 @@ namespace VadgerWorkspace.Domain.Commands.Client.RequiresWaiting
                 {
                     Name = message.Chat.FirstName,
                     Id = message.Chat.Id,
-                    Stage = Data.Stages.SelectService,
+                    Stage = Data.Stages.starting,
                     Link = message.Chat.LinkedChatId,
-                }); 
+                });
                 await clientRepository.SaveAsync();
             }
             else
             {
-                client.Stage = Data.Stages.SelectService;
-                clientRepository.Update(client);
-                await clientRepository.SaveAsync();
-
+                if (client.Stage == Data.Stages.Chating)
+                {
+                    await clientBot.SendTextMessageAsync(clientId, "Пожалуйста, дождитесь ответа от нашего работника", replyMarkup: KeyboardClient.Empty);
+                    return;
+                }
+                
             }
             clientRepository.Dispose();
 
-            string text = $"Здравствуйте, {message.Chat.FirstName} ! \r\n⚡️Компания «VadGer» оказывает комплексную помощь в решении задач и проблем при релокации в Montenegro 🇲🇪 \r\n💫Команда нашего шутер-агентства – это экспаты, проживающие в Черногории уже более 10 лет и владеющие ценными опытом. \r\n ✉️Выберете желаемую услугу из предложенных или опишите запрос";
-            var mes = await clientBot.SendTextMessageAsync(message.Chat.Id, text, replyMarkup: KeyboardClient.SelectService);
+            string response = $"Здравствуйте, {message.Chat.FirstName} ! \r\n⚡️Компания «VadGer» оказывает комплексную помощь в решении задач и проблем при релокации в Montenegro 🇲🇪 \r\n💫Команда нашего шутер-агентства – это экспаты, проживающие в Черногории уже более 10 лет и владеющие ценными опытом. \r\n";
+
+            await clientBot.SendTextMessageAsync(clientId, response, replyMarkup: KeyboardClient.Menu);
 
         }
     }

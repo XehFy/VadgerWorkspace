@@ -10,11 +10,12 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
 {
     public class KeyboardAdmin
     {
-        public static ReplyKeyboardMarkup Management = new ReplyKeyboardMarkup(new[]
+        public static ReplyKeyboardMarkup Menu = new ReplyKeyboardMarkup(new[]
         {
-            new KeyboardButton[] {"Посмотреть диалог клиента"},
-            new KeyboardButton[] {"Посмотреть клиентов работника"},
-            new KeyboardButton[] {"Список работников"}
+            new KeyboardButton[] {"Посмотреть переписку"},
+            new KeyboardButton[] {"Получить ссылку на клиента" },
+            //new KeyboardButton[] {"Посмотреть клиентов работника"},
+            //new KeyboardButton[] {"Список работников"}
         })
         {
             ResizeKeyboard = true
@@ -28,15 +29,6 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
             new KeyboardButton[] {"Улицинь"},
             new KeyboardButton[] {"Подгорица"},
             new KeyboardButton[] {"Другие"}
-        })
-        {
-            ResizeKeyboard = true
-        };
-
-        public static ReplyKeyboardMarkup Menu = new ReplyKeyboardMarkup(new[]
-        {
-            new KeyboardButton[] {"Выбрать клиента"},
-            new KeyboardButton[] {"Управление"}
         })
         {
             ResizeKeyboard = true
@@ -127,6 +119,36 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
                 for (int j = 0; j < 3; j++)
                 {
                     clientList[i][j] = InlineKeyboardButton.WithCallbackData(clientsArr[i * 3 + j].Name, $"/chooseMessClient {employeeId} {clientsArr[i * 3 + j].Id}");
+                }
+            }
+            clientsArr.Clear();
+
+            return clientList;
+        }
+
+        public static InlineKeyboardButton[][] CreateGetLinkKeyboard(IEnumerable<Client> clients)
+        {
+            var clientList = new InlineKeyboardButton[clients.Count() / 3 + 1][];
+            var clientsArr = clients.ToList();
+
+            for (int i = 0; i < clients.Count() / 3 + 1; i++)
+            {
+                if (i == clients.Count() / 3)
+                {
+                    clientList[i] = new InlineKeyboardButton[clients.Count() - (clients.Count() / 3) * 3];
+                    for (int j = 0; j < clients.Count() - (clients.Count() / 3) * 3; j++)
+                    {
+                        clientList[i][j] = InlineKeyboardButton.WithCallbackData(clientsArr[i * 3 + j].Name, $"/GetClientLink {clientsArr[i * 3 + j].Id}");
+                    }
+                    break;
+                }
+                else
+                {
+                    clientList[i] = new InlineKeyboardButton[3];
+                }
+                for (int j = 0; j < 3; j++)
+                {
+                    clientList[i][j] = InlineKeyboardButton.WithCallbackData(clientsArr[i * 3 + j].Name, $"/GetClientLink {clientsArr[i * 3 + j].Id}");
                 }
             }
             clientsArr.Clear();
