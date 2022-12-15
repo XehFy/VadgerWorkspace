@@ -56,7 +56,7 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
             var mes = await adminBot.SendTextMessageAsync(
                 message.Chat.Id,
                 "Вы зарегистрировались как Admin",
-                replyMarkup: KeyboardEmployee.Menu);
+                replyMarkup: KeyboardEmployee.Empty);
         }
 
     }

@@ -56,7 +56,7 @@ namespace VadgerWorkspace.Domain.Commands.Employee.InstantReply
             var mes = await employeeBot.SendTextMessageAsync(
                 message.Chat.Id,
                 "Вы зарегистрировались как работник",
-                replyMarkup: KeyboardEmployee.Menu);
+                replyMarkup: KeyboardEmployee.Empty);
         }
     }
 }
