@@ -44,15 +44,6 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
 
         public static InlineKeyboardButton[][] CreateChooseEmployeeKeyboard(IEnumerable<Employee> employees, Client client)
         {
-            //var employeeList = new InlineKeyboardButton[employees.Count()];
-            //int i = 0;
-            //foreach (var employee in employees)
-            //{
-            //    employeeList[i] = InlineKeyboardButton.WithCallbackData(employee.Name.ToString(), $"/chooseEmp {employee.Id} {client.Id}");
-            //    i++;
-            //}
-            //return employeeList;
-
             var employeeList = new InlineKeyboardButton[employees.Count() / 3 + 1][];
             var employeeArr = employees.ToList();
 
@@ -141,12 +132,6 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
             clientsArr.Clear();
 
             return clientList;
-            //foreach (var employee in employees)
-            //{
-            //    employeeList[i] = InlineKeyboardButton.WithCallbackData(employee.Name.ToString(), $"/chooseEmp {employee.Id} {client.Id}");
-            //    i++;
-            //}
-            //return employeeList;
         }
 
     }   

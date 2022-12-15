@@ -72,12 +72,6 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
             clientsArr.Clear();
 
             return clientList;
-            //foreach (var employee in employees)
-            //{
-            //    employeeList[i] = InlineKeyboardButton.WithCallbackData(employee.Name.ToString(), $"/chooseEmp {employee.Id} {client.Id}");
-            //    i++;
-            //}
-            //return employeeList;
         }
 
         public static ReplyKeyboardRemove Empty = new ReplyKeyboardRemove();

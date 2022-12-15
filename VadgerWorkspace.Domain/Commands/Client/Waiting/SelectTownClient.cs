@@ -63,18 +63,6 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
             {
                  await adminBot.SendTextMessageAsync(admin.Id, requestDesc, replyMarkup: new InlineKeyboardMarkup(empKeyboard));
             }
-            
-
-
-            //if (client.Town.Contains(TownsEmpl))
-            //{
-            //    await employeeBot.SendTextMessageAsync(367867842, requestDesc, replyMarkup: KeyboardClient.Empty);
-            //}
-            //else
-            //{
-            //    await employeeBot.SendTextMessageAsync(5569437487, requestDesc, replyMarkup: KeyboardClient.Empty);
-            //}
-
         }
     }
 }

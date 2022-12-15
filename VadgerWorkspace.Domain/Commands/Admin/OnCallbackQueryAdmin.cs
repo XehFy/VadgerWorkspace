@@ -68,18 +68,17 @@ namespace VadgerWorkspace.Domain.Commands.Admin
 
         public async Task ChooseMessClient(string[] cbargs, CallbackQuery query, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, VadgerContext context)
         {
-            // учитывать также employeeId
-            //var employeeId = Convert.ToInt64(cbargs[1]);
+            var employeeId = Convert.ToInt64(cbargs[1]);
 
             ClientRepository clientRepository = new ClientRepository(context);
             var clientId = Convert.ToInt64(cbargs[2]);
             var client = clientRepository.GetClientByIdSync(clientId);
 
             MessageRepository messageRepository = new MessageRepository(context);
-            var messages = await messageRepository.GetAllMessagesByClientId(clientId);
+            var messagesFromClient = await messageRepository.GetAllMessagesByClientId(clientId);
+            var messages = messagesFromClient.Where(client => client.EmployeeId == employeeId);
 
-            //var messArr = new List<string>();
-            string ToSend = "";
+            StringBuilder ToSend = new StringBuilder();
             foreach(SavedMessage mess in messages)
             {
                 string name = "сотрудник";
@@ -88,15 +87,10 @@ namespace VadgerWorkspace.Domain.Commands.Admin
                     name = client.Name;
                 }
                 string newMess = $"{name}:\n'{mess.Text}'\n\n";
-                ToSend += newMess;
+                ToSend.Append(newMess);
             }
 
-            //for(int i = 0; i< messArr.Count(); i++)
-            //{
-
-            //}
-
-            await adminBot.SendTextMessageAsync(query.Message.Chat.Id, ToSend);
+            await adminBot.SendTextMessageAsync(query.Message.Chat.Id, ToSend.ToString());
             // В перспективе тут надо обновить сообщения у админов шобы тупа убрать инлайн клаву
 
             clientRepository.Dispose();
@@ -111,7 +105,7 @@ namespace VadgerWorkspace.Domain.Commands.Admin
 
             var keyBoard = KeyboardAdmin.CreateChooseClienMessagetKeyboard(clients, employeeId);
 
-            await adminBot.SendTextMessageAsync(query.Message.Chat.Id, "выберете сотрудника:", replyMarkup: new InlineKeyboardMarkup(keyBoard));
+            await adminBot.SendTextMessageAsync(query.Message.Chat.Id, "выберете клиента:", replyMarkup: new InlineKeyboardMarkup(keyBoard));
             // В перспективе тут надо обновить сообщения у админов шобы тупа убрать инлайн клаву
 
             clientRepository.Dispose();
