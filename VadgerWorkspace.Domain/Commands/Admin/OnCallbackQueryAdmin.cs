@@ -44,9 +44,43 @@ namespace VadgerWorkspace.Domain.Commands.Admin
                     
                     break;
 
+                case "/MakeAdmin":
+                    await MakeAdmin(cbargs, query, clientBot, employeeBot, adminBot, context);
+                    break;
+
                 default:
                     break;
             }
+        }
+
+        public async Task MakeAdmin(string[] cbargs, CallbackQuery query, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, VadgerContext context)
+        {
+            var employeeId = Convert.ToInt64(cbargs[1]);
+            var descision = cbargs[2];
+
+            EmployeeRepository employeeRepository = new EmployeeRepository(context);
+            switch (descision)
+            {
+                case "0":
+                    await adminBot.SendTextMessageAsync(employeeId, "Вам отказано в получении прав администратора");
+                    break;
+                case "1":
+                    var employee = await employeeRepository.GetEmployeeByIdAsync(employeeId);
+                    await adminBot.SendTextMessageAsync(employeeId, "Вы получили права глобального администратора");
+                    employee.IsAdmin = true;
+                    employee.IsLocalAdmin = false;
+                    employeeRepository.Update(employee);
+                    await employeeRepository.SaveAsync();
+                    break;
+                case "2":
+                    var descider = await employeeRepository.GetEmployeeByIdAsync(query.Message.Chat.Id);
+                    descider.Stage = Stages.SelectTown;
+                    employeeRepository.Update(descider);
+                    await employeeRepository.SaveAsync();
+                    await adminBot.SendTextMessageAsync(query.Message.Chat.Id, "Введите города для этого админа\nПожалуйста, вводите названия городов так, как показано ниже\nБудва Бар Подгорица");
+                    break;
+            }
+            employeeRepository.Dispose();
         }
 
         public async Task ChooseClientLink(string[] cbargs, CallbackQuery query, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, VadgerContext context)

@@ -155,6 +155,14 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
 
             return clientList;
         }
+        public static InlineKeyboardButton[] VerifyAdmin(long employeeId)
+        {
+            var keys = new InlineKeyboardButton[3];
+            keys[0] = InlineKeyboardButton.WithCallbackData("Сделать глобальным админом", $"/MakeAdmin {employeeId} 1");
+            keys[1] = InlineKeyboardButton.WithCallbackData("Сделать локальным админом", $"/MakeAdmin {employeeId} 2");
+            keys[2] = InlineKeyboardButton.WithCallbackData("Отклонить запрос", $"/MakeAdmin {employeeId} 0");
+            return keys;
+        }
 
     }   
 }

@@ -28,5 +28,15 @@ namespace VadgerWorkspace.Data.Repositories
         {
             return FindByCondition(employee => employee.IsAdmin == true);
         }
+
+        public IEnumerable<Employee> GetAllGlobalAdmins()
+        {
+            return FindByCondition(employee => employee.IsAdmin == true && employee.IsLocalAdmin == false);
+        }
+
+        public IEnumerable<Employee> GetAllLocalsWithTown(string town)
+        {
+            return GetAllAdmins().Where(a => a.IsLocalAdmin == true && a.Town.Contains(town));
+        }
     }
 }
