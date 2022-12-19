@@ -31,32 +31,39 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
             EmployeeRepository employeeRepository = new EmployeeRepository(context);
             var employeeId = message.Chat.Id;
 
-            var client = await employeeRepository.GetEmployeeByIdAsync(employeeId);
+            var admin = await employeeRepository.GetEmployeeByIdAsync(employeeId);
 
-            if (client == null)
+            if (admin == null)
             {
                 employeeRepository.Create(new Data.Entities.Employee
                 {
                     Name = message.Chat.FirstName,
                     Id = message.Chat.Id,
                     Stage = Data.Stages.SelectService,
-                    IsAdmin = true
+                    IsAdmin = false,
+                    IsLocalAdmin = false,
                 });
                 await employeeRepository.SaveAsync();
             }
-            else
+            if (admin.IsAdmin == false)
             {
-                client.Stage = Data.Stages.SelectService;
-                employeeRepository.Update(client);
-                await employeeRepository.SaveAsync();
+                var gAdmins = employeeRepository.GetAllGlobalAdmins();
+                foreach (var gAdmin in gAdmins)
+                {
+                    await adminBot.SendTextMessageAsync(gAdmin.Id, $"{message.Chat.FirstName} прислал запрос на подтверждение прав администратора", replyMarkup: KeyboardAdmin.VerifyAdmin(employeeId));
+                }
             }
+                //admin.Stage = Data.Stages.SelectService;
+                //employeeRepository.Update(admin);
+                //await employeeRepository.SaveAsync();
+            
             employeeRepository.Dispose();
 
 
-            var mes = await adminBot.SendTextMessageAsync(
-                message.Chat.Id,
-                "Вы зарегистрировались как Admin",
-                replyMarkup: KeyboardAdmin.Menu);
+            //var mes = await adminBot.SendTextMessageAsync(
+            //    message.Chat.Id,
+            //    "Вы зарегистрировались как Admin",
+            //    replyMarkup: KeyboardAdmin.Menu);
         }
 
     }
