@@ -48,9 +48,37 @@ namespace VadgerWorkspace.Domain.Commands.Admin
                     await MakeAdmin(cbargs, query, clientBot, employeeBot, adminBot, context);
                     break;
 
+                case "/chooseEmpManagement":
+
+
+                    break;
+
                 default:
                     break;
             }
+        }
+
+        public async Task ChooseEmpManagement(string[] cbargs, CallbackQuery query, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, VadgerContext context)
+        {
+            EmployeeRepository employeeRepository = new EmployeeRepository(context);
+            var empId = Convert.ToInt64(cbargs[1]);
+            var employee = await employeeRepository.GetEmployeeByIdAsync(empId);
+
+            var descider = await employeeRepository.GetEmployeeByIdAsync(query.Message.Chat.Id);
+            descider.ManagementId = employee.Id;
+            descider.Stage = Stages.Management;
+            employeeRepository.Update(descider);
+
+            string role = "";
+            if (employee.IsAdmin && employee.IsLocalAdmin) role = "Локальный админ";
+            if (employee.IsAdmin && !employee.IsLocalAdmin) role = "Глобальный админ";
+            if (!employee.IsAdmin && !employee.IsLocalAdmin) role = "Сотрудник";
+            string town = employee.Town;
+            if (town == null) town = "Город не назначен";
+
+            string text = $"сотрудник {employee.Name}\nГорода: {town} \nРоль {role}";
+            await adminBot.SendTextMessageAsync(query.Message.Chat.Id, text, replyMarkup: KeyboardAdmin.Management);
+            employeeRepository.Dispose();
         }
 
         public async Task MakeAdmin(string[] cbargs, CallbackQuery query, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, VadgerContext context)

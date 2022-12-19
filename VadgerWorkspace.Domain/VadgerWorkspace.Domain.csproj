@@ -7,8 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\Admin\RequiresWaiting\" />
-    <Folder Include="Commands\Admin\Waiting\" />
     <Folder Include="Commands\Employee\RequiresWaiting\" />
   </ItemGroup>
 

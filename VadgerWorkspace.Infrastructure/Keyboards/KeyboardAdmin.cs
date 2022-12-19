@@ -15,7 +15,17 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
             new KeyboardButton[] {"Посмотреть переписку"},
             new KeyboardButton[] {"Получить ссылку на клиента" },
             //new KeyboardButton[] {"Посмотреть клиентов работника"},
-            //new KeyboardButton[] {"Список работников"}
+            new KeyboardButton[] {"Управление сотрудниками"}
+        })
+        {
+            ResizeKeyboard = true
+        };
+
+        public static ReplyKeyboardMarkup Management = new ReplyKeyboardMarkup(new[]
+        {
+            new KeyboardButton[] {"Изменить роль"},
+            new KeyboardButton[] {"Изменить города"},
+            new KeyboardButton[] {"Вернуться в меню"},
         })
         {
             ResizeKeyboard = true
@@ -89,6 +99,36 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
                 for (int j = 0; j < 3; j++)
                 {
                     employeeList[i][j] = InlineKeyboardButton.WithCallbackData(employeeArr[i * 3 + j].Name, $"/chooseEmpMess {employeeArr[i * 3 + j].Id}");
+                }
+            }
+            employeeArr.Clear();
+
+            return employeeList;
+        }
+
+        public static InlineKeyboardButton[][] CreatechooseEmpManagementKeyboard(IEnumerable<Employee> employees)
+        {
+            var employeeList = new InlineKeyboardButton[employees.Count() / 3 + 1][];
+            var employeeArr = employees.ToList();
+
+            for (int i = 0; i < employees.Count() / 3 + 1; i++)
+            {
+                if (i == employees.Count() / 3)
+                {
+                    employeeList[i] = new InlineKeyboardButton[employees.Count() - (employees.Count() / 3) * 3];
+                    for (int j = 0; j < employees.Count() - (employees.Count() / 3) * 3; j++)
+                    {
+                        employeeList[i][j] = InlineKeyboardButton.WithCallbackData(employeeArr[i * 3 + j].Name, $"/chooseEmpManagement {employeeArr[i * 3 + j].Id}");
+                    }
+                    break;
+                }
+                else
+                {
+                    employeeList[i] = new InlineKeyboardButton[3];
+                }
+                for (int j = 0; j < 3; j++)
+                {
+                    employeeList[i][j] = InlineKeyboardButton.WithCallbackData(employeeArr[i * 3 + j].Name, $"/chooseEmpManagement {employeeArr[i * 3 + j].Id}");
                 }
             }
             employeeArr.Clear();
