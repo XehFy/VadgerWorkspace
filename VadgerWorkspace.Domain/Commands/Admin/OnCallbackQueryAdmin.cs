@@ -49,8 +49,7 @@ namespace VadgerWorkspace.Domain.Commands.Admin
                     break;
 
                 case "/chooseEmpManagement":
-
-
+                    await ChooseEmpManagement(cbargs, query, clientBot, employeeBot, adminBot, context);
                     break;
 
                 default:
@@ -78,6 +77,7 @@ namespace VadgerWorkspace.Domain.Commands.Admin
 
             string text = $"сотрудник {employee.Name}\nГорода: {town} \nРоль {role}";
             await adminBot.SendTextMessageAsync(query.Message.Chat.Id, text, replyMarkup: KeyboardAdmin.Management);
+            await employeeRepository.SaveAsync();
             employeeRepository.Dispose();
         }
 

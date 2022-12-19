@@ -35,29 +35,42 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
 
             if (admin == null)
             {
-                employeeRepository.Create(new Data.Entities.Employee
+                admin = new Data.Entities.Employee
                 {
                     Name = message.Chat.FirstName,
                     Id = message.Chat.Id,
                     Stage = Data.Stages.SelectService,
                     IsAdmin = false,
                     IsLocalAdmin = false,
-                });
+                };
+                employeeRepository.Create(admin);
                 await employeeRepository.SaveAsync();
             }
+
             if (admin.IsAdmin == false)
             {
                 var gAdmins = employeeRepository.GetAllGlobalAdmins();
                 foreach (var gAdmin in gAdmins)
                 {
-                    await adminBot.SendTextMessageAsync(gAdmin.Id, $"{message.Chat.FirstName} прислал запрос на подтверждение прав администратора", replyMarkup: KeyboardAdmin.VerifyAdmin(employeeId));
+                    await adminBot.SendTextMessageAsync(gAdmin.Id, $"{message.Chat.FirstName} прислал запрос на подтверждение прав администратора, теперь вы можете назначить его роль и города в меню управления работниками");
                 }
+                await adminBot.SendTextMessageAsync(employeeId, "Дождитесь решения по вопросу предоставления вам прав администратора");
+            }
+
+            if (admin.IsAdmin == true && admin.IsLocalAdmin == false)
+            {
+                await adminBot.SendTextMessageAsync(employeeId, "Вы уже являетесь глобальным администратором", replyMarkup: KeyboardAdmin.Menu);
+            }
+
+            if (admin.IsAdmin == true && admin.IsLocalAdmin == true)
+            {
+                await adminBot.SendTextMessageAsync(employeeId, "Вы уже являетесь локальным администратором", replyMarkup: KeyboardAdmin.LocalMenu);
             }
                 //admin.Stage = Data.Stages.SelectService;
                 //employeeRepository.Update(admin);
                 //await employeeRepository.SaveAsync();
-            
-            employeeRepository.Dispose();
+
+                employeeRepository.Dispose();
 
 
             //var mes = await adminBot.SendTextMessageAsync(

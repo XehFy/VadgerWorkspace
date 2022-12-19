@@ -21,7 +21,7 @@ namespace VadgerWorkspace.Data.Repositories
 
         public Employee GetEmployeeByIdSync(long id)
         {
-            return _dbContext.Set<Employee>().FirstOrDefault(o => o.Id == id);
+            return _dbContext.Set<Employee>().AsNoTracking().FirstOrDefault(o => o.Id == id);
         }
 
         public IEnumerable<Employee> GetAllAdmins()

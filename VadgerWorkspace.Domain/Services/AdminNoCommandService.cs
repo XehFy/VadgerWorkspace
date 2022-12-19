@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VadgerWorkspace.Domain.Abstractions;
+using VadgerWorkspace.Domain.Commands.Admin.Waiting;
 
 namespace VadgerWorkspace.Domain.Services
 {
@@ -15,7 +16,8 @@ namespace VadgerWorkspace.Domain.Services
         {
             _commands = new List<INorTelegramCommand>
             {
-
+                new GettingTown(),
+                new GettingRole(),
             };
         }
 

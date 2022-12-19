@@ -12,8 +12,9 @@ using Microsoft.EntityFrameworkCore;
 using VadgerWorkspace.Data.Repositories;
 using VadgerWorkspace.Data.Entities;
 using VadgerWorkspace.Infrastructure;
+using Telegram.Bot.Types.ReplyMarkups;
 
-namespace VadgerWorkspace.Domain.Commands.Admin.Waiting
+namespace VadgerWorkspace.Domain.Commands.Admin.RequiresWaiting
 {
     public class ChangeTown : TelegramCommand
     {
@@ -21,12 +22,20 @@ namespace VadgerWorkspace.Domain.Commands.Admin.Waiting
 
         public async override Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
-            ClientRepository clientRepository = new ClientRepository(context);
-            var clients = clientRepository.FindAll();
+            EmployeeRepository employeeRepository = new EmployeeRepository(context);
+            var descider = await employeeRepository.GetEmployeeByIdAsync(message.Chat.Id);
+            if (descider.Stage == Data.Stages.Management && descider.IsAdmin == true && descider.IsLocalAdmin == false)
+            {
+                descider.Stage = Data.Stages.SelectTown;
+                employeeRepository.Update(descider);
+                await employeeRepository.SaveAsync();
 
-            var clikeyboard = KeyboardAdmin.CreateGetLinkKeyboard(clients);
-
-            await adminBot.SendTextMessageAsync(message.Chat.Id, "Выберите клиента на которого хотите получить ссылку", replyMarkup: new InlineKeyboardMarkup(clikeyboard));
+                await adminBot.SendTextMessageAsync(message.Chat.Id, "Введите города как мы вам скажем чи тупа выберите один из кнопок если один нада", replyMarkup: KeyboardAdmin.SelectTown);
+            }
+            else
+            {
+                await adminBot.SendTextMessageAsync(message.Chat.Id, "иди нахой");
+            }
         }
 
         public override bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)

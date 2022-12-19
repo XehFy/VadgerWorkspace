@@ -21,11 +21,32 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
             ResizeKeyboard = true
         };
 
+        public static ReplyKeyboardMarkup LocalMenu = new ReplyKeyboardMarkup(new[]
+{
+            new KeyboardButton[] {"Посмотреть переписку"},
+            new KeyboardButton[] {"Получить ссылку на клиента" },
+            //new KeyboardButton[] {"Посмотреть клиентов работника"},
+            //new KeyboardButton[] {"Управление сотрудниками"}
+        })
+        {
+            ResizeKeyboard = true
+        };
+
         public static ReplyKeyboardMarkup Management = new ReplyKeyboardMarkup(new[]
         {
             new KeyboardButton[] {"Изменить роль"},
             new KeyboardButton[] {"Изменить города"},
             new KeyboardButton[] {"Вернуться в меню"},
+        })
+        {
+            ResizeKeyboard = true
+        };
+
+        public static ReplyKeyboardMarkup Roles = new ReplyKeyboardMarkup(new[]
+{
+            new KeyboardButton[] {"Глобальный админ"},
+            new KeyboardButton[] {"Локальный админ"},
+            new KeyboardButton[] {"Сотрудник"},
         })
         {
             ResizeKeyboard = true

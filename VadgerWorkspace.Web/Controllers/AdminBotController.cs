@@ -45,6 +45,10 @@ namespace VadgerWorkspace.Web.Controllers
 
             if (update == null)
                 return Ok();
+            //if (update.Message.Text == "Сотрудник")
+            //{
+            //    return Ok();
+            //}
 
             var message = update.Message;
 

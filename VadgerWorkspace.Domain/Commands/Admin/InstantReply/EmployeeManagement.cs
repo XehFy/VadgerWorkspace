@@ -14,7 +14,7 @@ using VadgerWorkspace.Domain.Abstractions;
 using VadgerWorkspace.Infrastructure;
 using VadgerWorkspace.Infrastructure.Keyboards;
 
-namespace VadgerWorkspace.Domain.Commands.Admin.RequiresWaiting
+namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
 {
     public class EmployeeManagement : TelegramCommand
     {
@@ -31,10 +31,19 @@ namespace VadgerWorkspace.Domain.Commands.Admin.RequiresWaiting
         public override async Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
             EmployeeRepository employeeRepository = new EmployeeRepository(context);
-            var employees = employeeRepository.FindAll();
-            var empKeyboard = KeyboardAdmin.CreatechooseEmpManagementKeyboard(employees);
-            await adminBot.SendTextMessageAsync(message.Chat.Id, "выберете сотрудника", replyMarkup: new InlineKeyboardMarkup(empKeyboard));
 
+            var currentAdmin = employeeRepository.GetAllGlobalAdmins().FirstOrDefault(e => e.Id == message.Chat.Id);
+
+            if (currentAdmin == null)
+            {
+                await adminBot.SendTextMessageAsync(message.Chat.Id, "У вас нет прав для управления работниками");
+            }
+            else
+            {                
+                var employees = employeeRepository.FindAll();
+                var empKeyboard = KeyboardAdmin.CreatechooseEmpManagementKeyboard(employees);
+                await adminBot.SendTextMessageAsync(message.Chat.Id, "выберете сотрудника", replyMarkup: new InlineKeyboardMarkup(empKeyboard));
+            }
         }
     }
 }

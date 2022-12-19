@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using VadgerWorkspace.Domain.Abstractions;
 using VadgerWorkspace.Domain.Commands.Admin;
 using VadgerWorkspace.Domain.Commands.Admin.InstantReply;
+using VadgerWorkspace.Domain.Commands.Admin.RequiresWaiting;
 
 namespace VadgerWorkspace.Domain.Services
 {
@@ -18,7 +19,10 @@ namespace VadgerWorkspace.Domain.Services
             _commands = new List<INorTelegramCommand>
             {
                 new StartAdmin(),
-                new ManagementAdmin(),
+                new EmployeeManagement(),
+                new BackToMenu(),
+                new ChangeRole(),
+                new ChangeTown(),
                 new ShowMessages(),
                 new GetClientLink(),
             };
