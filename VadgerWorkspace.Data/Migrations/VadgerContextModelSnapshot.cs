@@ -58,6 +58,9 @@ namespace VadgerWorkspace.Data.Migrations
                     b.Property<bool?>("IsAdmin")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool?>("IsLocalAdmin")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool?>("IsVerified")
                         .HasColumnType("INTEGER");
 
@@ -91,6 +94,9 @@ namespace VadgerWorkspace.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Text")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("Time")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

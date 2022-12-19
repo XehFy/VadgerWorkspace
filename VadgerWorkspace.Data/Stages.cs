@@ -14,5 +14,8 @@ namespace VadgerWorkspace.Data
         Descriptioning = 3,
         Waiting = 4,
         Chating = 5,
+        NotAdmin,
+        LocalAdmin,
+        GlobalAdmin
     }
 }
