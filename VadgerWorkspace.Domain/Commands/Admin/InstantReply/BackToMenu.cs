@@ -22,12 +22,15 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
 
         public async override Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
-            ClientRepository clientRepository = new ClientRepository(context);
-            var clients = clientRepository.FindAll();
+            EmployeeRepository employeeRepository = new EmployeeRepository(context);
+            var employee = employeeRepository.GetEmployeeByIdSync(message.Chat.Id);
 
-            var clikeyboard = KeyboardAdmin.CreateGetLinkKeyboard(clients);
+            if (employee.IsLocalAdmin)
+            {
+                await adminBot.SendTextMessageAsync(message.Chat.Id, "меню", replyMarkup: KeyboardAdmin.LocalMenu);
 
-            await adminBot.SendTextMessageAsync(message.Chat.Id, "Выберите клиента на которого хотите получить ссылку", replyMarkup: new InlineKeyboardMarkup(clikeyboard));
+            } else await adminBot.SendTextMessageAsync(message.Chat.Id, "меню", replyMarkup: KeyboardAdmin.Menu);
+            
         }
 
         public override bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)

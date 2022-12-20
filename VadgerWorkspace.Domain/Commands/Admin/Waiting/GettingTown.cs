@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot;
 using Telegram.Bot.Types;
 using VadgerWorkspace.Data.Repositories;
 using VadgerWorkspace.Domain.Abstractions;
 using VadgerWorkspace.Infrastructure;
+using VadgerWorkspace.Infrastructure.Keyboards;
 
 namespace VadgerWorkspace.Domain.Commands.Admin.Waiting
 {
@@ -27,6 +29,8 @@ namespace VadgerWorkspace.Domain.Commands.Admin.Waiting
             //employeeRepository.Update(employee);
             context.SaveChanges();
             //await employeeRepository.SaveAsync();
+
+            await adminBot.SendTextMessageAsync(message.Chat.Id, "Города назначены", replyMarkup: KeyboardAdmin.Menu);
         }
 
         public override bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)

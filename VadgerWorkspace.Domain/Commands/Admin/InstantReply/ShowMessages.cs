@@ -31,9 +31,26 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
         public override async Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
             EmployeeRepository employeeRepository = new EmployeeRepository(context);
-            var employees = employeeRepository.FindAll();
-            var empKeyboard = KeyboardAdmin.CreateChooseEmployeeMessageKeyboard(employees);
-            await adminBot.SendTextMessageAsync(message.Chat.Id, "выберете сотрудника", replyMarkup: new InlineKeyboardMarkup(empKeyboard));
+            var admin = await employeeRepository.GetEmployeeByIdAsync(message.Chat.Id);
+            if (admin == null) return;
+            if (admin.Town == null)
+            {
+                admin.Town = "Город не назначен";
+            }
+            IEnumerable<Data.Entities.Employee> employees;
+            if (admin.IsLocalAdmin)
+            {
+                employees = employeeRepository.GetAllEmpsWithTown(admin.Town);
+                var empKeyboard = KeyboardAdmin.CreateChooseEmployeeMessageKeyboard(employees);
+                await adminBot.SendTextMessageAsync(message.Chat.Id, "выберете сотрудника", replyMarkup: new InlineKeyboardMarkup(empKeyboard));
+            } else
+            {
+                employees = employeeRepository.FindAll();
+                var empKeyboard = KeyboardAdmin.CreateChooseEmployeeMessageKeyboard(employees);
+                await adminBot.SendTextMessageAsync(message.Chat.Id, "выберете сотрудника", replyMarkup: new InlineKeyboardMarkup(empKeyboard));
+            }
+            
+            
  
         }
     }

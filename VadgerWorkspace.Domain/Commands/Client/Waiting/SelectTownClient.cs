@@ -51,17 +51,29 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
             string text = $"Ваша заявка отправлена.";
             var mes = await clientBot.SendTextMessageAsync(message.Chat.Id, text, replyMarkup: KeyboardClient.Empty);
 
-            string TownsEmpl = "Будва Тиват Котор";
 
             string requestDesc = $"Поступила заявка от: {client.Name}! \n Услуга: {client.Service} \n Город: {client.Town}\n Выберите работника:";
             //Здесь отправка инлайна с работниками и этим клиентом админу
             EmployeeRepository employeeRepository = new EmployeeRepository(context);
-            var employees = employeeRepository.FindAll();
-            var admins = employeeRepository.GetAllAdmins();
-            var empKeyboard = KeyboardAdmin.CreateChooseEmployeeKeyboard(employees, client);
-            foreach(var admin in admins)
+            var admins = employeeRepository.GetAllLocalsWithTown(client.Town);
+            if (admins.Any())
             {
-                 await adminBot.SendTextMessageAsync(admin.Id, requestDesc, replyMarkup: new InlineKeyboardMarkup(empKeyboard));
+                var employees = employeeRepository.GetAllEmpsWithTown(client.Town);
+                var empKeyboard = KeyboardAdmin.CreateChooseEmployeeKeyboard(employees, client);
+                foreach (var admin in admins)
+                {
+                    await adminBot.SendTextMessageAsync(admin.Id, requestDesc, replyMarkup: new InlineKeyboardMarkup(empKeyboard));
+                }
+            }
+            else
+            {
+                var employees = employeeRepository.FindAll();
+                var adminsGlob = employeeRepository.GetAllAdmins();
+                var empKeyboard = KeyboardAdmin.CreateChooseEmployeeKeyboard(employees, client);
+                foreach (var admin in admins)
+                {
+                    await adminBot.SendTextMessageAsync(admin.Id, requestDesc, replyMarkup: new InlineKeyboardMarkup(empKeyboard));
+                }
             }
         }
     }

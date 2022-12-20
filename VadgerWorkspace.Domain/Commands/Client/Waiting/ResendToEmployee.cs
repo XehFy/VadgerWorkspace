@@ -43,8 +43,8 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
             var client = clientRepository.GetClientByIdSync(message.Chat.Id);
 
             EmployeeRepository employeeRepository = new EmployeeRepository(context);
-
-            if(client.EmployeeId == null) return false;
+            if (client == null) return false;
+            if (client.EmployeeId == null) return false;
 
             var employee = employeeRepository.GetEmployeeByIdSync((long)client.EmployeeId);
 

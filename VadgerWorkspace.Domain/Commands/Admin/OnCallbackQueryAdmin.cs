@@ -139,7 +139,7 @@ namespace VadgerWorkspace.Domain.Commands.Admin
 
                 await clientRepository.SaveAsync();
 
-                await employeeBot.SendTextMessageAsync(employeeId, request);
+                await employeeBot.SendTextMessageAsync(employeeId, request, replyMarkup: KeyboardEmployee.Menu);
             }
             else
             {
