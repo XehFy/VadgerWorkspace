@@ -180,7 +180,7 @@ namespace VadgerWorkspace.Domain.Commands.Admin
                 {
                     name = client.Name;
                 }
-                string newMess = $"{name}:\n'{mess.Text}'\n\n";
+                string newMess = $"{name}:\n{mess.Time}\n'{mess.Text}'\n\n";
                 ToSend.Append(newMess);
             }
 

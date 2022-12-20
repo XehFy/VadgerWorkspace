@@ -36,11 +36,11 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
 
             if (currentAdmin == null)
             {
-                await adminBot.SendTextMessageAsync(message.Chat.Id, "У вас нет прав для управления работниками");
+                await adminBot.SendTextMessageAsync(message.Chat.Id, "У вас нет прав для управления работниками",replyMarkup: KeyboardAdmin.Empty);
             }
             else
             {                
-                var employees = employeeRepository.FindAll();
+                var employees = employeeRepository.FindAll().Where(e => e.Id != message.Chat.Id);
                 var empKeyboard = KeyboardAdmin.CreatechooseEmpManagementKeyboard(employees);
                 await adminBot.SendTextMessageAsync(message.Chat.Id, "выберете сотрудника", replyMarkup: new InlineKeyboardMarkup(empKeyboard));
             }

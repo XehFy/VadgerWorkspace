@@ -52,9 +52,9 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
                 var gAdmins = employeeRepository.GetAllGlobalAdmins();
                 foreach (var gAdmin in gAdmins)
                 {
-                    await adminBot.SendTextMessageAsync(gAdmin.Id, $"{message.Chat.FirstName} прислал запрос на подтверждение прав администратора, теперь вы можете назначить его роль и города в меню управления работниками");
+                    await adminBot.SendTextMessageAsync(gAdmin.Id, $"{message.Chat.FirstName} прислал запрос на подтверждение прав администратора, теперь вы можете назначить его роль и города в меню управления работниками",replyMarkup: KeyboardAdmin.Menu);
                 }
-                await adminBot.SendTextMessageAsync(employeeId, "Дождитесь решения по вопросу предоставления вам прав администратора");
+                await adminBot.SendTextMessageAsync(employeeId, "Дождитесь решения по вопросу предоставления вам прав администратора",replyMarkup: KeyboardAdmin.Empty);
             }
 
             if (admin.IsAdmin == true && admin.IsLocalAdmin == false)

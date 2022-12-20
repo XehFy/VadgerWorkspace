@@ -25,6 +25,14 @@ namespace VadgerWorkspace.Domain.Commands.Admin.Waiting
             var employee = await employeeRepository.GetEmployeeByIdAsync((long)descider.ManagementId);
             bool flag = false;
 
+            if (descider.Id == employee.Id)
+            {
+                await adminBot.SendTextMessageAsync(descider.Id, "Вы не можете изменить роль самому себе", replyMarkup: KeyboardAdmin.Menu);
+                //descider.Stage = Data.Stages.SelectService;
+                //employeeRepository.Update(descider);
+                //await employeeRepository.SaveAsync();
+                return;
+            }
             if (role.Contains("Глобальный админ"))
             {
                 employee.IsLocalAdmin = false;

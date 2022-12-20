@@ -21,6 +21,16 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
 
         public async override Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
+            EmployeeRepository employeeRepository = new EmployeeRepository(context);
+
+            var currentAdmin = employeeRepository.GetAllGlobalAdmins().FirstOrDefault(e => e.Id == message.Chat.Id);
+
+            if (currentAdmin == null)
+            {
+                await adminBot.SendTextMessageAsync(message.Chat.Id, "У вас нет прав для получения ссылок", replyMarkup: KeyboardAdmin.Empty);
+                return;
+            }
+
             ClientRepository clientRepository = new ClientRepository(context);
             var clients = clientRepository.FindAll();
 

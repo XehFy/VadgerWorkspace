@@ -26,11 +26,11 @@ namespace VadgerWorkspace.Domain.Commands.Employee.Waiting
             var client = clientRepository.GetClientByIdSync(employee.ClientId);
 
             MessageRepository messageRepository = new MessageRepository(context);
-            var saveMessage = new SavedMessage() { Text = text, ClientId = client.Id, IsFromClient = false, EmployeeId = employee.Id };
+            var saveMessage = new SavedMessage() { Text = text, ClientId = client.Id, IsFromClient = false, EmployeeId = employee.Id, Time = message.Date };
             messageRepository.Create(saveMessage);
             await messageRepository.SaveAsync();
 
-            await clientBot.SendTextMessageAsync(client.Id, text);
+            await clientBot.SendTextMessageAsync(client.Id, "От сотрудника\n" + text);
         }
 
         public override bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)

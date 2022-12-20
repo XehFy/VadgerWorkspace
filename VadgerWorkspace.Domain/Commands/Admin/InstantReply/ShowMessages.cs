@@ -32,14 +32,29 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
         {
             EmployeeRepository employeeRepository = new EmployeeRepository(context);
             var admin = await employeeRepository.GetEmployeeByIdAsync(message.Chat.Id);
+
             if (admin == null) return;
+
+            if (admin.IsAdmin == false)
+            {
+                await adminBot.SendTextMessageAsync(message.Chat.Id, "Дождитесь подтверждения ваших прав", replyMarkup: KeyboardAdmin.Empty);
+                return;
+            }           
+
             if (admin.Town == null)
             {
                 admin.Town = "Город не назначен";
+
             }
+
             IEnumerable<Data.Entities.Employee> employees;
             if (admin.IsLocalAdmin)
             {
+                if ( admin.Town == null)
+                {
+                    await adminBot.SendTextMessageAsync(message.Chat.Id, "У вас нет назначеных городов", replyMarkup: KeyboardAdmin.LocalMenu);
+                    return;
+                }
                 employees = employeeRepository.GetAllEmpsWithTown(admin.Town);
                 var empKeyboard = KeyboardAdmin.CreateChooseEmployeeMessageKeyboard(employees);
                 await adminBot.SendTextMessageAsync(message.Chat.Id, "выберете сотрудника", replyMarkup: new InlineKeyboardMarkup(empKeyboard));
