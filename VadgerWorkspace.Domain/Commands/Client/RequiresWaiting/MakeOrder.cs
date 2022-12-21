@@ -38,14 +38,14 @@ namespace VadgerWorkspace.Domain.Commands.Client.RequiresWaiting
             }
             else
             {
-                if (client.Stage == Data.Stages.Chating)
-                {
-                    await clientBot.SendTextMessageAsync(clientId, "Пожалуйста, дождитесь ответа от нашего работника", replyMarkup: KeyboardClient.Empty);
-                    return;
-                }
-                //ПОТОМ УБРАТЬ
-                client.EmployeeId = 0;
-                //УБРАТЬ НАХОЙ
+                //if (client.Stage == Data.Stages.Chating)
+                //{
+                //    await clientBot.SendTextMessageAsync(clientId, "Пожалуйста, дождитесь ответа от нашего работника", replyMarkup: KeyboardClient.Empty);
+                //    return;
+                //}
+                ////ПОТОМ УБРАТЬ
+                //client.EmployeeId = 0;
+                ////УБРАТЬ НАХОЙ
                 client.Stage = Data.Stages.SelectService;
                 clientRepository.Update(client);
                 await clientRepository.SaveAsync();

@@ -11,13 +11,16 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
     {
         public static ReplyKeyboardMarkup SelectService = new ReplyKeyboardMarkup(new[]
         {
-            new KeyboardButton[] {"Услуги по переезду"},
-            new KeyboardButton[] {"Оформление документов"},
-            new KeyboardButton[] {"Транспорт"},
-            new KeyboardButton[] {"Недвижимость"},
-            new KeyboardButton[] {"Рабочие вопросы"},
-            new KeyboardButton[] {"Услуги переводчика"},
-            new KeyboardButton[] {"Другое"}
+            new KeyboardButton[] {"Получение ВНЖ🇲🇪"},
+            new KeyboardButton[] {"Открытие ИП и фирмы💼"},
+            new KeyboardButton[] {"Организация мероприятий🎉"},
+            new KeyboardButton[] {"Подбор и содержание недвижимости🏠"},
+            new KeyboardButton[] {"Покупка авто и получение прав🚗"},
+            new KeyboardButton[] {"IT разработка💻"},
+            new KeyboardButton[] {"Обмен криптовалют💰"},
+            new KeyboardButton[] {"Обмен валют💶"},
+            new KeyboardButton[] {"Индивидуальные вопросы❗️"},
+            new KeyboardButton[] {"Услуги переводчика🈲"},
         })
         {
             ResizeKeyboard = true
@@ -28,8 +31,11 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
             new KeyboardButton[] {"Бар"},
             new KeyboardButton[] {"Будва"},
             new KeyboardButton[] {"Тиват"},
+            new KeyboardButton[] {"Котор"},
+            new KeyboardButton[] {"Херцег-Нови"},
+            new KeyboardButton[] {"Подгорица"},
             new KeyboardButton[] {"Улицинь"},
-            new KeyboardButton[] {"Другие"}
+            new KeyboardButton[] {"Другие"},
         })
         {
             ResizeKeyboard = true
@@ -37,7 +43,7 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
 
         public static ReplyKeyboardMarkup Menu = new ReplyKeyboardMarkup(new[]
         {
-            new KeyboardButton[] {"Заказать услугу"},
+            new KeyboardButton[] {"Заказать новую услугу"},
         })
         {
             ResizeKeyboard = true

@@ -49,7 +49,7 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
             //clientRepository.Dispose();
 
             string text = $"Ваша заявка отправлена.";
-            var mes = await clientBot.SendTextMessageAsync(message.Chat.Id, text, replyMarkup: KeyboardClient.Empty);
+            var mes = await clientBot.SendTextMessageAsync(message.Chat.Id, text, replyMarkup: KeyboardClient.Menu);
 
 
             string requestDesc = $"Поступила заявка от: {client.Name}! \n Услуга: {client.Service} \n Город: {client.Town}\n Выберите работника:";
