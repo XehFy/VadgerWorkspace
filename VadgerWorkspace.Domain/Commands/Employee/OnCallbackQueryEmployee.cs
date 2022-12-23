@@ -23,8 +23,8 @@ namespace VadgerWorkspace.Domain.Commands.Employee
                     var employeeId = Convert.ToInt64(cbargs[1]);
                     var clientId = Convert.ToInt64(cbargs[2]);
 
-                    await clientBot.SendTextMessageAsync(clientId, "Был открыт чат с нашим работником, все последующие сообщения будут поступать от него и записываться в нашу систему");
-                    await employeeBot.SendTextMessageAsync(employeeId, "Вы открыли чат с клиентом, дальнейшие сообщения будут направлены клиенту и записываться для контроля качества.");
+                    //await clientBot.SendTextMessageAsync(clientId, "Был открыт чат с нашим работником, все последующие сообщения будут поступать от него и записываться в нашу систему");
+                    await employeeBot.SendTextMessageAsync(employeeId, "Вы открыли чат с клиентом");//, дальнейшие сообщения будут направлены клиенту и записываться для контроля качества.
 
                     ClientRepository clientRepository = new ClientRepository(context);
                     var client = clientRepository.GetClientByIdSync(clientId);

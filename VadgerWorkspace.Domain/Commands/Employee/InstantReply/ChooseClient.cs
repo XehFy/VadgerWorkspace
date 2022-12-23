@@ -39,7 +39,7 @@ namespace VadgerWorkspace.Domain.Commands.Employee.InstantReply
 
             var emplkeyboard = KeyboardEmployee.CreateChooseClientKeyboard(clients, employee);
 
-            await employeeBot.SendTextMessageAsync(employeeId, "Выбери с кем чатица", replyMarkup: new InlineKeyboardMarkup(emplkeyboard));
+            await employeeBot.SendTextMessageAsync(employeeId, "Выбери клиента", replyMarkup: new InlineKeyboardMarkup(emplkeyboard));
         }
     }
 }

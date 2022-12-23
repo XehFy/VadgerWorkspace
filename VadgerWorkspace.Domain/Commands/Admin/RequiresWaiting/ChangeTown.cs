@@ -30,11 +30,11 @@ namespace VadgerWorkspace.Domain.Commands.Admin.RequiresWaiting
                 employeeRepository.Update(descider);
                 await employeeRepository.SaveAsync();
 
-                await adminBot.SendTextMessageAsync(message.Chat.Id, "Введите города как мы вам скажем чи тупа выберите один из кнопок если один нада", replyMarkup: KeyboardAdmin.SelectTown);
+                await adminBot.SendTextMessageAsync(message.Chat.Id, "Введите города с большой буквы через пробел. \nС клавиатуры будет выбран только один город", replyMarkup: KeyboardAdmin.SelectTown);
             }
             else
             {
-                await adminBot.SendTextMessageAsync(message.Chat.Id, "иди нахой");
+                await adminBot.SendTextMessageAsync(message.Chat.Id, "У вас нет доступа");
             }
         }
 

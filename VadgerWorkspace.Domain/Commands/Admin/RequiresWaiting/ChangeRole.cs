@@ -30,7 +30,7 @@ namespace VadgerWorkspace.Domain.Commands.Admin.RequiresWaiting
             }
             else
             {
-                await adminBot.SendTextMessageAsync(message.Chat.Id, "иди нахой");
+                await adminBot.SendTextMessageAsync(message.Chat.Id, "У вас нет доступа");
             }
         }
 
