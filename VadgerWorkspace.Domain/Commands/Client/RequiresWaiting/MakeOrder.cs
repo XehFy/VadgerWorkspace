@@ -47,6 +47,7 @@ namespace VadgerWorkspace.Domain.Commands.Client.RequiresWaiting
                 //client.EmployeeId = 0;
                 ////УБРАТЬ НАХОЙ
                 client.Stage = Data.Stages.SelectService;
+                client.EmployeeId = null;
                 clientRepository.Update(client);
                 await clientRepository.SaveAsync();
 

@@ -15,6 +15,7 @@ namespace VadgerWorkspace.Domain.Services
                 new SelectServiceClient(),
                 new SelectTownClient(),
                 new ResendToEmployee(),
+                new ResendOtherTypes(),
             };
         }
 
