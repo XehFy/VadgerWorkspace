@@ -52,9 +52,50 @@ namespace VadgerWorkspace.Domain.Commands.Admin
                     await ChooseEmpManagement(cbargs, query, clientBot, employeeBot, adminBot, context);
                     break;
 
+                case "/ChangeEmpl":
+                    await ChangeEmpl(cbargs, query, clientBot, employeeBot, adminBot, context);
+                    break;
+                case "/ChangeEmployeeWithClient":
+                    await ChangeEmployeeWithClient(cbargs, query, clientBot, employeeBot, adminBot, context);
+                    break;
+
                 default:
                     break;
             }
+        }
+
+        public async Task ChangeEmployeeWithClient(string[] cbargs, CallbackQuery query, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, VadgerContext context)
+        {
+            ClientRepository clientRepository = new ClientRepository(context);
+            var employeeId = Convert.ToInt64(cbargs[1]);
+            var clientId = Convert.ToInt64(cbargs[2]);
+
+            var client = clientRepository.GetClientByIdSync(clientId);
+
+
+            client.EmployeeId = employeeId;
+            clientRepository.Update(client);
+            var request = $"Вам переназначен клиент:\n {client.Name}, {client.Town}\n{client.Service}";
+
+            EmployeeRepository employeeRepository = new EmployeeRepository(context);
+
+            var emp = employeeRepository.GetEmployeeByIdSync(employeeId);
+            var actor = employeeRepository.GetEmployeeByIdSync(query.Message.Chat.Id);
+            var Admins = employeeRepository.GetAllGlobalAdmins();
+
+            foreach (var adm in Admins)
+            {
+                await adminBot.SendTextMessageAsync(adm.Id, $"{actor.Name} \nПереназначил сотруднику: {emp.Name}\n клиента: {client.Name}, {client.Town}\n{client.Service}");
+            }
+
+            MessageRepository messageRepository = new MessageRepository(context);
+            messageRepository.Create(new SavedMessage { ClientId = clientId, EmployeeId = employeeId, IsFromClient = false, Text = request });
+
+            await clientRepository.SaveAsync();
+
+            await employeeBot.SendTextMessageAsync(employeeId, request, replyMarkup: KeyboardEmployee.Menu);
+
+            clientRepository.Dispose();
         }
 
         public async Task ChooseEmpManagement(string[] cbargs, CallbackQuery query, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, VadgerContext context)
@@ -111,12 +152,35 @@ namespace VadgerWorkspace.Domain.Commands.Admin
             employeeRepository.Dispose();
         }
 
+
         public async Task ChooseClientLink(string[] cbargs, CallbackQuery query, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, VadgerContext context)
         {
             ClientRepository clientRepository = new ClientRepository(context);
             var clientId = Convert.ToInt64(cbargs[1]);
             var client  = await clientRepository.GetClientByIdAsync(clientId);
             await adminBot.SendTextMessageAsync(query.Message.Chat.Id, $"[{client.Name}](tg://user?id={client.Id})", parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2);
+            clientRepository.Dispose();
+        }
+
+        public async Task ChangeEmpl(string[] cbargs, CallbackQuery query, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, VadgerContext context)
+        {
+            ClientRepository clientRepository = new ClientRepository(context);
+            var clientId = Convert.ToInt64(cbargs[1]);
+
+            var client = clientRepository.GetClientByIdSync(clientId);
+
+            var employeeRepository = new EmployeeRepository(context);
+
+            var requestDesc = $"выберете сотрудника для клиента {client.Name}";
+
+            var employees = employeeRepository.FindAll();
+            var adminsGlob = employeeRepository.GetAllGlobalAdmins();
+            var empKeyboard = KeyboardAdmin.CreateChangeEmployeeWithClientKeyboard(employees, client);
+            foreach (var admin in adminsGlob)
+            {
+                await adminBot.SendTextMessageAsync(admin.Id, requestDesc, replyMarkup: new InlineKeyboardMarkup(empKeyboard));
+            }
+
             clientRepository.Dispose();
         }
 

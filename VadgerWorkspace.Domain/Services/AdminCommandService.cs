@@ -25,6 +25,7 @@ namespace VadgerWorkspace.Domain.Services
                 new ChangeTown(),
                 new ShowMessages(),
                 new GetClientLink(),
+                new ChangeClientEmployee(),
             };
         }
 
