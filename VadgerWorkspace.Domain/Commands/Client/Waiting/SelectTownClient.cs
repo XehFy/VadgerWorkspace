@@ -64,13 +64,18 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
                 {
                     await adminBot.SendTextMessageAsync(admin.Id, requestDesc, replyMarkup: new InlineKeyboardMarkup(empKeyboard));
                 }
+                var adminsGlob = employeeRepository.GetAllGlobalAdmins();
+                foreach (var admin in adminsGlob)
+                {
+                    await adminBot.SendTextMessageAsync(admin.Id, $"Поступила заявка от: {client.Name}! \n Услуга: {client.Service} \n Город: {client.Town}\n Для этого города у вас есть локальный админ, если он не назначит работника вы можете получить ссылку на клиента и пообщаться лично");
+                }
             }
             else
             {
                 var employees = employeeRepository.FindAll();
                 var adminsGlob = employeeRepository.GetAllGlobalAdmins();
                 var empKeyboard = KeyboardAdmin.CreateChooseEmployeeKeyboard(employees, client);
-                foreach (var admin in admins)
+                foreach (var admin in adminsGlob)
                 {
                     await adminBot.SendTextMessageAsync(admin.Id, requestDesc, replyMarkup: new InlineKeyboardMarkup(empKeyboard));
                 }
