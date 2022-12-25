@@ -16,7 +16,7 @@ namespace VadgerWorkspace.Domain.Commands.Client.RequiresWaiting
 {
     internal class MakeOrder : TelegramCommand
     {
-        public override string Name => "Заказать услугу";
+        public override string Name => "Заказать новую услугу";
 
         public async override Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {

@@ -68,7 +68,7 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
             else
             {
                 var employees = employeeRepository.FindAll();
-                var adminsGlob = employeeRepository.GetAllAdmins();
+                var adminsGlob = employeeRepository.GetAllGlobalAdmins();
                 var empKeyboard = KeyboardAdmin.CreateChooseEmployeeKeyboard(employees, client);
                 foreach (var admin in admins)
                 {

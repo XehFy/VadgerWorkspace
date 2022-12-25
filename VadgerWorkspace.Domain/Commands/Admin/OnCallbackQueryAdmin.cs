@@ -134,6 +134,17 @@ namespace VadgerWorkspace.Domain.Commands.Admin
                 clientRepository.Update(client);
                 var request = $"Вам назначен клиент:\n {client.Name}, {client.Town}\n{client.Service}";
 
+                EmployeeRepository employeeRepository = new EmployeeRepository(context);
+
+                var emp = employeeRepository.GetEmployeeByIdSync(employeeId);
+                var actor = employeeRepository.GetEmployeeByIdSync(query.Message.Chat.Id);
+                var Admins = employeeRepository.GetAllGlobalAdmins();
+
+                foreach (var adm in Admins)
+                {
+                    await adminBot.SendTextMessageAsync(adm.Id, $"{actor.Name} \nназначил сотруднику: {emp.Name}\n клиента: {client.Name}, {client.Town}\n{client.Service}");
+                }
+
                 MessageRepository messageRepository = new MessageRepository(context);
                 messageRepository.Create(new SavedMessage { ClientId = clientId, EmployeeId = employeeId, IsFromClient = false, Text = request });
 
