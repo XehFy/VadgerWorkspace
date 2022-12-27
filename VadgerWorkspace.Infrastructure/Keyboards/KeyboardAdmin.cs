@@ -288,5 +288,13 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
             return keys;
         }
 
+        public static InlineKeyboardButton[] VerifyEmployee(long employeeId)
+        {
+            var keys = new InlineKeyboardButton[2];
+            keys[0] = InlineKeyboardButton.WithCallbackData("Подтвердить своего сотрудника", $"/ApproveEmpl {employeeId} 1");
+            keys[1] = InlineKeyboardButton.WithCallbackData("Отклонить запрос", $"/ApproveEmpl {employeeId} 0");
+            return keys;
+        }
+
     }   
 }

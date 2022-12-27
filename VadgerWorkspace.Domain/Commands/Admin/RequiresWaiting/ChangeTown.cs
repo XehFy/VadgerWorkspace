@@ -30,7 +30,7 @@ namespace VadgerWorkspace.Domain.Commands.Admin.RequiresWaiting
                 employeeRepository.Update(descider);
                 await employeeRepository.SaveAsync();
 
-                await adminBot.SendTextMessageAsync(message.Chat.Id, "Введите города с большой буквы через пробел. \nС клавиатуры будет выбран только один город", replyMarkup: KeyboardAdmin.SelectTown);
+                await adminBot.SendTextMessageAsync(message.Chat.Id, "Если вы хотите изменить города для админа то также не забудьте изменить города для всех его сотрудников\nВведите города с большой буквы через пробел. \nС клавиатуры будет выбран только один город", replyMarkup: KeyboardAdmin.SelectTown);
             }
             else
             {

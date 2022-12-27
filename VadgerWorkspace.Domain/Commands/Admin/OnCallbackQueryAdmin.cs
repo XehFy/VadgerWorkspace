@@ -58,10 +58,44 @@ namespace VadgerWorkspace.Domain.Commands.Admin
                 case "/ChangeEmployeeWithClient":
                     await ChangeEmployeeWithClient(cbargs, query, clientBot, employeeBot, adminBot, context);
                     break;
+                case "/ApproveEmpl":
+                    await ApproveEmpl(cbargs, query, clientBot, employeeBot, adminBot, context);
+                    break;
 
                 default:
                     break;
             }
+        }
+
+        public async Task ApproveEmpl(string[] cbargs, CallbackQuery query, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, VadgerContext context)
+        {
+            var employeeId = Convert.ToInt64(cbargs[1]);
+            var descision = cbargs[2];
+            var adminId = query.From.Id;
+            EmployeeRepository employeeRepository = new EmployeeRepository(context);
+            var empl = await employeeRepository.GetEmployeeByIdAsync(employeeId);
+            switch (descision)
+            {
+                case "0":
+                    await employeeBot.SendTextMessageAsync(employeeId, "Вам отказано в получении прав сотрудника");
+                    await adminBot.EditMessageTextAsync(query.Message.Chat.Id, query.Message.MessageId, $"Вы вы отказали {empl.Name}", replyMarkup: null);
+
+                    break;
+                case "1":
+                    var employee = await employeeRepository.GetEmployeeByIdAsync(employeeId);
+                    var admin = await employeeRepository.GetEmployeeByIdAsync(adminId);
+                    employee.Town = admin.Town;
+                    employee.IsVerified = true;
+                    await employeeBot.SendTextMessageAsync(employeeId, $"Вы стали работником в следующих городах: {admin.Town}");
+                    await adminBot.EditMessageTextAsync(query.Message.Chat.Id, query.Message.MessageId, $"Вы назначили сотрудником {empl.Name}", replyMarkup: null);
+
+
+                    employeeRepository.Update(employee);
+                    await employeeRepository.SaveAsync();
+                    break;
+            }
+
+            employeeRepository.Dispose();
         }
 
         public async Task ChangeEmployeeWithClient(string[] cbargs, CallbackQuery query, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, VadgerContext context)
@@ -213,6 +247,7 @@ namespace VadgerWorkspace.Domain.Commands.Admin
                 messageRepository.Create(new SavedMessage { ClientId = clientId, EmployeeId = employeeId, IsFromClient = false, Text = request });
 
                 await clientRepository.SaveAsync();
+                await adminBot.EditMessageTextAsync(query.Message.Chat.Id, query.Message.MessageId, $"Вы назначили: {emp.Name} на этот заказ", replyMarkup: null);
 
                 await employeeBot.SendTextMessageAsync(employeeId, request, replyMarkup: KeyboardEmployee.Menu);
             }
@@ -222,6 +257,7 @@ namespace VadgerWorkspace.Domain.Commands.Admin
                 var employee = await employeeRepository.GetEmployeeByIdAsync((long)client.EmployeeId);
                 await adminBot.EditMessageTextAsync(query.Message.Chat.Id, query.Message.MessageId,$"{employee.Name} уже был назначен кем-то на этот заказ", replyMarkup: null);
             }
+
             // В перспективе тут надо обновить сообщения у админов шобы тупа убрать инлайн клаву
             //EmployeeRepository employeeRepository = new EmployeeRepository(context);
             //var admins = employeeRepository.GetAllAdmins();

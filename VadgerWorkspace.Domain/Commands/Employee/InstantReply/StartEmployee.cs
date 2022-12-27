@@ -37,39 +37,34 @@ namespace VadgerWorkspace.Domain.Commands.Employee.InstantReply
 
             if (client == null)
             {
-                employeeRepository.Create(new Data.Entities.Employee
+                client = new Data.Entities.Employee
                 {
                     Name = message.Chat.FirstName,
                     Id = message.Chat.Id,
                     Stage = Data.Stages.SelectService
-                }); 
+                };
+                employeeRepository.Create(client);
+                
                 await employeeRepository.SaveAsync();
             }
             else
             {
-                ///
-                // сделать тупа загрузку локальных админов + глобал и дать челу кнопку выбрать куда
-                // он хочет подсосаться 
-
-                var admins = employeeRepository.GetAllAdmins();
-
-                var empKeyboard = KeyboardEmployee.ChooseMaster(admins);
                 
-                await adminBot.SendTextMessageAsync(client.Id, "Выберете своего управляющего", replyMarkup: new InlineKeyboardMarkup(empKeyboard));
-                   
-                ///
+                //var mes = await employeeBot.SendTextMessageAsync(
+                //message.Chat.Id,
+                //"Вы уже зарегистрированы как работник",
+                //replyMarkup: KeyboardEmployee.Menu);
                 client.Stage = Data.Stages.SelectService;
                 employeeRepository.Update(client);
                 await employeeRepository.SaveAsync();
             }
+            var admins = employeeRepository.GetAllAdmins();
+
+            var empKeyboard = KeyboardEmployee.ChooseMaster(admins);
+
+            await employeeBot.SendTextMessageAsync(client.Id, "Выберете своего управляющего", replyMarkup: new InlineKeyboardMarkup(empKeyboard));
+
             employeeRepository.Dispose();
-
-            // уведомлений нет нихуя
-
-            var mes = await employeeBot.SendTextMessageAsync(
-                message.Chat.Id,
-                "Вы зарегистрировались как работник",
-                replyMarkup: KeyboardEmployee.Menu);
         }
     }
 }

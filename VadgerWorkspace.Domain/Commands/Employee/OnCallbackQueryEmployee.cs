@@ -9,6 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using VadgerWorkspace.Infrastructure;
 using VadgerWorkspace.Data;
 using VadgerWorkspace.Data.Repositories;
+using VadgerWorkspace.Data.Entities;
+using VadgerWorkspace.Infrastructure.Keyboards;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace VadgerWorkspace.Domain.Commands.Employee
 {
@@ -23,7 +26,7 @@ namespace VadgerWorkspace.Domain.Commands.Employee
                     await StartChat(cbargs, query, clientBot, employeeBot, adminBot, context);
                     break;
                 case "/ChooseMaster":
-
+                    await ChooseMaster(cbargs, query, clientBot, employeeBot, adminBot, context);
                     break;
             }
         }
@@ -55,25 +58,14 @@ namespace VadgerWorkspace.Domain.Commands.Employee
         {
             var adminId = Convert.ToInt64(cbargs[1]);
 
-            //await clientBot.SendTextMessageAsync(clientId, "Был открыт чат с нашим работником, все последующие сообщения будут поступать от него и записываться в нашу систему");
-            await adminBot.SendTextMessageAsync(adminId, "какой то хуила попытался зарегаться на тебя лол");//, дальнейшие сообщения будут направлены клиенту и записываться для контроля качества.
-            // бля ну пиздец а шо дальше то епта
-            // вся задумка по пизде пошла 
-            // если глобал захочет города изменить то че мы срать жидко будем чи шо?
-            // поход надо тогда привязать сотрудника к админу чтоли 
-            // бля ебал этих ебланов 
-            // какую только хуйню не придумают шобы тока не сказать челам прямо
-            // наш бот мы админы
-            // мы всех назначаем 
-            // нет блять надо изебнуться ааааааааааааааааа
+            var Keyboard = KeyboardAdmin.VerifyEmployee(query.From.Id);
 
-            EmployeeRepository employeeRepository = new EmployeeRepository(context);
-            var employee = await employeeRepository.GetEmployeeByIdAsync(employeeId);
-            employee.Stage = Stages.Chating;
-            employee.ClientId = clientId;
-            employeeRepository.Update(employee);
-            employeeRepository.SaveAsync();
-            employeeRepository.Dispose();
+            await employeeBot.EditMessageTextAsync(query.Message.Chat.Id, query.Message.MessageId, $"Прошение отправлено", replyMarkup: null);
+
+
+            //await clientBot.SendTextMessageAsync(clientId, "Был открыт чат с нашим работником, все последующие сообщения будут поступать от него и записываться в нашу систему");
+            await adminBot.SendTextMessageAsync(adminId, $"{query.From.FirstName} хочет стать вашим сотрудником", replyMarkup: new InlineKeyboardMarkup(Keyboard));//, дальнейшие сообщения будут направлены клиенту и записываться для контроля качества.
+            
         }
 
 
