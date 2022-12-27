@@ -74,6 +74,34 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
             return clientList;
         }
 
-        public static ReplyKeyboardRemove Empty = new ReplyKeyboardRemove();
+        public static InlineKeyboardButton[][] ChooseMaster(IEnumerable<Employee> clients)
+        {
+            var clientList = new InlineKeyboardButton[clients.Count() / 3 + 1][];
+            var clientsArr = clients.ToList();
+
+            for (int i = 0; i < clients.Count() / 3 + 1; i++)
+            {
+                if (i == clients.Count() / 3)
+                {
+                    clientList[i] = new InlineKeyboardButton[clients.Count() - (clients.Count() / 3) * 3];
+                    for (int j = 0; j < clients.Count() - (clients.Count() / 3) * 3; j++)
+                    {
+                        clientList[i][j] = InlineKeyboardButton.WithCallbackData(clientsArr[i * 3 + j].Name, $"/ChooseMaster {clientsArr[i * 3 + j].Id}");
+                    }
+                    break;
+                }
+                else
+                {
+                    clientList[i] = new InlineKeyboardButton[3];
+                }
+                for (int j = 0; j < 3; j++)
+                {
+                    clientList[i][j] = InlineKeyboardButton.WithCallbackData(clientsArr[i * 3 + j].Name, $"/ChooseMaster {clientsArr[i * 3 + j].Id}");
+                }
+            }
+            clientsArr.Clear();
+
+            return clientList;
+        }
     }
 }

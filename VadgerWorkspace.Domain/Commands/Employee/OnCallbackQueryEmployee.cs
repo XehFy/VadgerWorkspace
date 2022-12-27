@@ -20,28 +20,63 @@ namespace VadgerWorkspace.Domain.Commands.Employee
             switch (cbargs[0])
             {
                 case "/StartChat":
-                    var employeeId = Convert.ToInt64(cbargs[1]);
-                    var clientId = Convert.ToInt64(cbargs[2]);
+                    await StartChat(cbargs, query, clientBot, employeeBot, adminBot, context);
+                    break;
+                case "/ChooseMaster":
 
-                    //await clientBot.SendTextMessageAsync(clientId, "Был открыт чат с нашим работником, все последующие сообщения будут поступать от него и записываться в нашу систему");
-                    await employeeBot.SendTextMessageAsync(employeeId, "Вы открыли чат с клиентом");//, дальнейшие сообщения будут направлены клиенту и записываться для контроля качества.
-
-                    ClientRepository clientRepository = new ClientRepository(context);
-                    var client = clientRepository.GetClientByIdSync(clientId);
-                    client.EmployeeId = employeeId;
-                    client.Stage = Stages.Chating;
-                    clientRepository.Update(client);
-
-                    EmployeeRepository employeeRepository = new EmployeeRepository(context);
-                    var employee = await employeeRepository.GetEmployeeByIdAsync(employeeId);
-                    employee.Stage = Stages.Chating;
-                    employee.ClientId = clientId;
-                    employeeRepository.Update(employee);
-
-                    await clientRepository.SaveAsync();
-                    clientRepository.Dispose();
                     break;
             }
         }
+        public async Task StartChat(string[] cbargs, CallbackQuery query, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, VadgerContext context)
+        {
+            var employeeId = Convert.ToInt64(cbargs[1]);
+            var clientId = Convert.ToInt64(cbargs[2]);
+
+            //await clientBot.SendTextMessageAsync(clientId, "Был открыт чат с нашим работником, все последующие сообщения будут поступать от него и записываться в нашу систему");
+            await employeeBot.SendTextMessageAsync(employeeId, "Вы открыли чат с клиентом");//, дальнейшие сообщения будут направлены клиенту и записываться для контроля качества.
+
+            ClientRepository clientRepository = new ClientRepository(context);
+            var client = clientRepository.GetClientByIdSync(clientId);
+            client.EmployeeId = employeeId;
+            client.Stage = Stages.Chating;
+            clientRepository.Update(client);
+
+            EmployeeRepository employeeRepository = new EmployeeRepository(context);
+            var employee = await employeeRepository.GetEmployeeByIdAsync(employeeId);
+            employee.Stage = Stages.Chating;
+            employee.ClientId = clientId;
+            employeeRepository.Update(employee);
+
+            await clientRepository.SaveAsync();
+            clientRepository.Dispose();
+        }
+
+        public async Task ChooseMaster(string[] cbargs, CallbackQuery query, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, VadgerContext context)
+        {
+            var adminId = Convert.ToInt64(cbargs[1]);
+
+            //await clientBot.SendTextMessageAsync(clientId, "Был открыт чат с нашим работником, все последующие сообщения будут поступать от него и записываться в нашу систему");
+            await adminBot.SendTextMessageAsync(adminId, "какой то хуила попытался зарегаться на тебя лол");//, дальнейшие сообщения будут направлены клиенту и записываться для контроля качества.
+            // бля ну пиздец а шо дальше то епта
+            // вся задумка по пизде пошла 
+            // если глобал захочет города изменить то че мы срать жидко будем чи шо?
+            // поход надо тогда привязать сотрудника к админу чтоли 
+            // бля ебал этих ебланов 
+            // какую только хуйню не придумают шобы тока не сказать челам прямо
+            // наш бот мы админы
+            // мы всех назначаем 
+            // нет блять надо изебнуться ааааааааааааааааа
+
+            EmployeeRepository employeeRepository = new EmployeeRepository(context);
+            var employee = await employeeRepository.GetEmployeeByIdAsync(employeeId);
+            employee.Stage = Stages.Chating;
+            employee.ClientId = clientId;
+            employeeRepository.Update(employee);
+            employeeRepository.SaveAsync();
+            employeeRepository.Dispose();
+        }
+
+
+
     }
 }

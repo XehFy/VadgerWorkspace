@@ -34,7 +34,7 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
             new KeyboardButton[] {"Котор"},
             new KeyboardButton[] {"Херцег-Нови"},
             new KeyboardButton[] {"Подгорица"},
-            new KeyboardButton[] {"Улицинь"},
+            new KeyboardButton[] {"Ульцинь"},
             new KeyboardButton[] {"Другие"},
         })
         {

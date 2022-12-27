@@ -12,6 +12,7 @@ using VadgerWorkspace.Infrastructure.Keyboards;
 using Microsoft.EntityFrameworkCore;
 using VadgerWorkspace.Infrastructure;
 using VadgerWorkspace.Data.Repositories;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace VadgerWorkspace.Domain.Commands.Employee.InstantReply
 {
@@ -46,12 +47,24 @@ namespace VadgerWorkspace.Domain.Commands.Employee.InstantReply
             }
             else
             {
+                ///
+                // сделать тупа загрузку локальных админов + глобал и дать челу кнопку выбрать куда
+                // он хочет подсосаться 
+
+                var admins = employeeRepository.GetAllAdmins();
+
+                var empKeyboard = KeyboardEmployee.ChooseMaster(admins);
+                
+                await adminBot.SendTextMessageAsync(client.Id, "Выберете своего управляющего", replyMarkup: new InlineKeyboardMarkup(empKeyboard));
+                   
+                ///
                 client.Stage = Data.Stages.SelectService;
                 employeeRepository.Update(client);
                 await employeeRepository.SaveAsync();
             }
             employeeRepository.Dispose();
 
+            // уведомлений нет нихуя
 
             var mes = await employeeBot.SendTextMessageAsync(
                 message.Chat.Id,

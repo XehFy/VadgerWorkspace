@@ -57,9 +57,11 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
             new KeyboardButton[] {"Бар"},
             new KeyboardButton[] {"Будва"},
             new KeyboardButton[] {"Тиват"},
-            new KeyboardButton[] {"Улицинь"},
+            new KeyboardButton[] {"Котор"},
+            new KeyboardButton[] {"Херцег-Нови"},
             new KeyboardButton[] {"Подгорица"},
-            new KeyboardButton[] {"Другие"}
+            new KeyboardButton[] {"Ульцинь"},
+            new KeyboardButton[] {"Другие"},
         })
         {
             ResizeKeyboard = true
