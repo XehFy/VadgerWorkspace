@@ -58,12 +58,13 @@ namespace VadgerWorkspace.Domain.Commands.Employee.InstantReply
                 employeeRepository.Update(client);
                 await employeeRepository.SaveAsync();
             }
-            var admins = employeeRepository.GetAllAdmins();
-
-            var empKeyboard = KeyboardEmployee.ChooseMaster(admins);
-
-            await employeeBot.SendTextMessageAsync(client.Id, "Выберете своего управляющего", replyMarkup: new InlineKeyboardMarkup(empKeyboard));
-
+            if (client.IsAdmin == false)
+            {
+                var admins = employeeRepository.GetAllAdmins();
+                var empKeyboard = KeyboardEmployee.ChooseMaster(admins);
+                await employeeBot.SendTextMessageAsync(client.Id, "Выберете своего управляющего", replyMarkup: new InlineKeyboardMarkup(empKeyboard));
+            }
+            else await employeeBot.SendTextMessageAsync(client.Id, "вы являетесь администаротом и можете назначать клиетов себе", replyMarkup: KeyboardEmployee.Menu);
             employeeRepository.Dispose();
         }
     }
