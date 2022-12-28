@@ -23,20 +23,44 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
         public override async Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
             await clientBot.SendTextMessageAsync(message.From.Id, "Данный тип сообщений не поддерживается");
+
             //ClientRepository clientRepository = new ClientRepository(context);
             //var client = clientRepository.GetClientByIdSync(message.Chat.Id);
 
             //EmployeeRepository employeeRepository = new EmployeeRepository(context);
             //var employee = employeeRepository.GetEmployeeByIdSync((long)client.EmployeeId);
 
+            //if (employee != null) 
+            //{
+            //    switch (message.Type)
+            //    {
+            //        case MessageType.Voice:
+            //            //await employeeBot.SendVoiceAsync(employee.Id, message.Voice.FileId);
+            //            var filePath = Path.Combine(Path.GetTempPath(), message.Voice.FileId + ".ogg");
+
+            //            // InputOnlineFile f = new InputOnlineFile(file);
+            //            //await employeeBot.SendVoiceAsync(employee.Id, file);
+            //            using (var file = System.IO.File.Open(filePath, FileMode.OpenOrCreate))
+            //            {
+            //                var filetg = await clientBot.GetFileAsync(message.Voice.FileId);
+            //                //InputOnlineFile f = new InputOnlineFile(file);
+            //                await clientBot.DownloadFileAsync(filetg.FilePath, file);
+            //                await employeeBot.SendVoiceAsync(employee.Id, file);
+            //                Console.WriteLine($"Find Voice at {filePath}");
+            //            }
+            //            break;
+            //    }
+
+            //}
+
             //var adminsGlob = employeeRepository.GetAllGlobalAdmins();
             //var text = $"От клиента {client.Name}\n сообщение не текстового типа";
             //foreach (var admin in adminsGlob)
             //{
             //    await clientBot.SendTextMessageAsync(admin.Id, text);
-            //    await clientBot.CopyMessageAsync(admin.Id, client.Id, message.MessageId );
-            //} 
-            //if(employee!= null)
+            //    await clientBot.CopyMessageAsync(admin.Id, client.Id, message.MessageId);
+            //}
+            //if (employee != null)
             //{
             //    await clientBot.SendTextMessageAsync(employee.Id, text);
             //    await clientBot.CopyMessageAsync(employee.Id, client.Id, message.MessageId);

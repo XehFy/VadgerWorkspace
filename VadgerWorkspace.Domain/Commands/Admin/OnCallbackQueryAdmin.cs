@@ -207,13 +207,14 @@ namespace VadgerWorkspace.Domain.Commands.Admin
 
             var requestDesc = $"выберете сотрудника для клиента {client.Name}";
 
-            var employees = employeeRepository.FindAll();
+            var employees = employeeRepository.FindAll().Where(e => e.IsVerified == true);
             var adminsGlob = employeeRepository.GetAllGlobalAdmins();
             var empKeyboard = KeyboardAdmin.CreateChangeEmployeeWithClientKeyboard(employees, client);
-            foreach (var admin in adminsGlob)
-            {
-                await adminBot.SendTextMessageAsync(admin.Id, requestDesc, replyMarkup: new InlineKeyboardMarkup(empKeyboard));
-            }
+            //foreach (var admin in adminsGlob)
+            //{
+            //    await adminBot.SendTextMessageAsync(admin.Id, requestDesc, replyMarkup: new InlineKeyboardMarkup(empKeyboard));
+            //}
+            await adminBot.SendTextMessageAsync(query.From.Id, requestDesc, replyMarkup: new InlineKeyboardMarkup(empKeyboard));
 
             clientRepository.Dispose();
         }
