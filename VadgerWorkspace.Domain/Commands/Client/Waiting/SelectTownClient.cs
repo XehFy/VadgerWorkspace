@@ -62,6 +62,7 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
                 var empKeyboard = KeyboardAdmin.CreateChooseEmployeeKeyboard(employees, client);
                 foreach (var admin in admins)
                 {
+                    if (admin.IsVerified != true) await adminBot.SendTextMessageAsync(admin.Id, "вы не запустили бота для сотрудников и не сможете назначить клинта себе");
                     await adminBot.SendTextMessageAsync(admin.Id, requestDesc, replyMarkup: new InlineKeyboardMarkup(empKeyboard));
                 }
                 var adminsGlob = employeeRepository.GetAllGlobalAdmins();
@@ -77,6 +78,7 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
                 var empKeyboard = KeyboardAdmin.CreateChooseEmployeeKeyboard(employees, client);
                 foreach (var admin in adminsGlob)
                 {
+                    if (admin.IsVerified != true) await adminBot.SendTextMessageAsync(admin.Id, "вы не запустили бота для сотрудников и не сможете назначить клинта себе");
                     await adminBot.SendTextMessageAsync(admin.Id, requestDesc, replyMarkup: new InlineKeyboardMarkup(empKeyboard));
                 }
             }
