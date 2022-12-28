@@ -64,7 +64,13 @@ namespace VadgerWorkspace.Domain.Commands.Employee.InstantReply
                 var empKeyboard = KeyboardEmployee.ChooseMaster(admins);
                 await employeeBot.SendTextMessageAsync(client.Id, "Выберете своего управляющего", replyMarkup: new InlineKeyboardMarkup(empKeyboard));
             }
-            else await employeeBot.SendTextMessageAsync(client.Id, "вы являетесь администаротом и можете назначать клиентов себе", replyMarkup: KeyboardEmployee.Menu);
+            else 
+            {
+                client.IsVerified = true;
+                employeeRepository.Update(client);
+                await employeeRepository.SaveAsync();
+                await employeeBot.SendTextMessageAsync(client.Id, "вы являетесь администаротом и можете назначать клиентов себе", replyMarkup: KeyboardEmployee.Menu);           
+            }
             employeeRepository.Dispose();
         }
     }
