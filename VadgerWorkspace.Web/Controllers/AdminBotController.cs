@@ -86,7 +86,7 @@ namespace VadgerWorkspace.Web.Controllers
                     }
                 }
             }
-
+            _context.Dispose();
             return Ok();
         }
     }

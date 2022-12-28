@@ -32,7 +32,7 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
             }
 
             ClientRepository clientRepository = new ClientRepository(context);
-            var clients = clientRepository.FindAll();
+            var clients = clientRepository.FindAll().Where(c => c.Town != null);
 
             var clikeyboard = KeyboardAdmin.CreateGetLinkKeyboard(clients);
 
