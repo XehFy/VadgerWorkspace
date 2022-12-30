@@ -86,9 +86,14 @@ namespace VadgerWorkspace.Domain.Commands.Admin
                     var admin = await employeeRepository.GetEmployeeByIdAsync(adminId);
                     employee.Town = admin.Town;
                     employee.IsVerified = true;
-                    await employeeBot.SendTextMessageAsync(employeeId, $"Вы стали работником в следующих городах: {admin.Town}");
+                    await employeeBot.SendTextMessageAsync(employeeId, $"Вы стали работником \n{admin.Town}");
                     await adminBot.EditMessageTextAsync(query.Message.Chat.Id, query.Message.MessageId, $"Вы назначили сотрудником {empl.Name}", replyMarkup: null);
 
+                    var adminsGlob = employeeRepository.GetAllGlobalAdmins();
+                    foreach (var adminG in adminsGlob)
+                    {
+                        await adminBot.SendTextMessageAsync(adminG.Id, $"{adminG.Name} \n подтвердил: {employee.Name} как сотрудника \n{employee.Town}");
+                    }
 
                     employeeRepository.Update(employee);
                     await employeeRepository.SaveAsync();
@@ -192,7 +197,12 @@ namespace VadgerWorkspace.Domain.Commands.Admin
             ClientRepository clientRepository = new ClientRepository(context);
             var clientId = Convert.ToInt64(cbargs[1]);
             var client  = await clientRepository.GetClientByIdAsync(clientId);
-            await adminBot.SendTextMessageAsync(query.Message.Chat.Id, $"[{client.Name}](tg://user?id={client.Id})", parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2);
+            if ((client.Town != null) && (client.Service != null))
+            {
+                await adminBot.SendTextMessageAsync(query.Message.Chat.Id, $"[{client.Name}](tg://user?id={client.Id})\n{client.Town}\n{client.Service}", parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2);
+            }
+            else await adminBot.SendTextMessageAsync(query.Message.Chat.Id, $"[{client.Name}](tg://user?id={client.Id})", parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2);
+
             clientRepository.Dispose();
         }
 
@@ -205,7 +215,7 @@ namespace VadgerWorkspace.Domain.Commands.Admin
 
             var employeeRepository = new EmployeeRepository(context);
 
-            var requestDesc = $"выберете сотрудника для клиента {client.Name}";
+            var requestDesc = $"выберете сотрудника для клиента {client.Name}\n{client.Town}\n{client.Service} ";
 
             var employees = employeeRepository.FindAll().Where(e => e.IsVerified == true);
             var adminsGlob = employeeRepository.GetAllGlobalAdmins();

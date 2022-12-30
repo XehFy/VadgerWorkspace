@@ -68,7 +68,7 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
                 var adminsGlob = employeeRepository.GetAllGlobalAdmins();
                 foreach (var admin in adminsGlob)
                 {
-                    await adminBot.SendTextMessageAsync(admin.Id, $"Поступила заявка от: {client.Name}! \n Услуга: {client.Service} \n Город: {client.Town}\n Для этого города у вас есть локальный админ, если он не назначит работника вы можете получить ссылку на клиента и пообщаться лично");
+                    await adminBot.SendTextMessageAsync(admin.Id, $"Поступила заявка от: {client.Name}! \n Услуга: {client.Service} \n Город: {client.Town}\n Для этого города у вас есть локальный админ, если он не назначит работника вы можете сделать это самостоятельно в меню управления");
                 }
             }
             else

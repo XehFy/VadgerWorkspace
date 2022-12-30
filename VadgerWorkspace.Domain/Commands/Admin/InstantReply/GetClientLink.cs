@@ -36,7 +36,15 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
 
             var clikeyboard = KeyboardAdmin.CreateGetLinkKeyboard(clients);
 
-            await adminBot.SendTextMessageAsync(message.Chat.Id, "Выберите клиента на которого хотите получить ссылку", replyMarkup: new InlineKeyboardMarkup(clikeyboard));
+            await adminBot.SendTextMessageAsync(message.Chat.Id, "Выберите клиента, на которого хотите получить ссылку", replyMarkup: new InlineKeyboardMarkup(clikeyboard));
+            var clientsNotRegistred = clientRepository.FindAll().Where(c => c.Town == null);
+
+            var clikeyboardNR = KeyboardAdmin.CreateGetLinkKeyboard(clientsNotRegistred);
+            if (clientsNotRegistred.Any()) 
+            {
+                await adminBot.SendTextMessageAsync(message.Chat.Id, "Эти клиенты нажали старт в боте, но не заказали услугу", replyMarkup: new InlineKeyboardMarkup(clikeyboardNR));
+            }
+
         }
 
         public override bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)

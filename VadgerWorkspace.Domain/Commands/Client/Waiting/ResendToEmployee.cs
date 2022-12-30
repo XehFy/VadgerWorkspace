@@ -28,7 +28,9 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
             
             MessageRepository messageRepository = new MessageRepository(context);
             var saveMessage = new SavedMessage() { Text = text, ClientId = client.Id, IsFromClient = true, EmployeeId = employee.Id, Time = message.Date};
+
             messageRepository.Create(saveMessage);
+
             await messageRepository.SaveAsync();
 
             text = $"От {client.Name}\n{message.Text}";
