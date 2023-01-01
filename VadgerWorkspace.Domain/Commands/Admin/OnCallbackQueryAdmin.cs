@@ -197,11 +197,14 @@ namespace VadgerWorkspace.Domain.Commands.Admin
             ClientRepository clientRepository = new ClientRepository(context);
             var clientId = Convert.ToInt64(cbargs[1]);
             var client  = await clientRepository.GetClientByIdAsync(clientId);
+            await adminBot.SendTextMessageAsync(query.Message.Chat.Id, $"Вы можете посмотреть ссылку в боте для клиентов", parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2);
             if ((client.Town != null) && (client.Service != null))
-            {
-                await adminBot.SendTextMessageAsync(query.Message.Chat.Id, $"[{client.Name}](tg://user?id={client.Id})\n{client.Town}\n{client.Service}", parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2);
+            {         
+                await clientBot.SendTextMessageAsync(query.Message.Chat.Id, $"[{client.Name}](tg://user?id={client.Id})\n{client.Town}\n{client.Service}", parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2);
             }
-            else await adminBot.SendTextMessageAsync(query.Message.Chat.Id, $"[{client.Name}](tg://user?id={client.Id})", parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2);
+            else { 
+                await clientBot.SendTextMessageAsync(query.Message.Chat.Id, $"[{client.Name}](tg://user?id={client.Id})", parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2); 
+            }
 
             clientRepository.Dispose();
         }
