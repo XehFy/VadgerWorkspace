@@ -197,10 +197,20 @@ namespace VadgerWorkspace.Domain.Commands.Admin
             ClientRepository clientRepository = new ClientRepository(context);
             var clientId = Convert.ToInt64(cbargs[1]);
             var client  = await clientRepository.GetClientByIdAsync(clientId);
-            await adminBot.SendTextMessageAsync(query.Message.Chat.Id, $"Вы можете посмотреть ссылку в боте для клиентов", parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2);
+
+            string EmpName;
+            if (client.EmployeeId != null) 
+            {
+                EmployeeRepository employeeRepository = new EmployeeRepository(context);
+                var employee = await employeeRepository.GetEmployeeByIdAsync((long)client.EmployeeId);
+                EmpName = $"Сотрудник: {employee.Name}"; 
+            }
+            else { EmpName = "Сотрудник не назначен"; }
+
+            await adminBot.SendTextMessageAsync(query.Message.Chat.Id, $"Вы можете посмотреть ссылку в боте для клиентов\n{client.Name}\n{client.Town}\n{client.Service}\n{EmpName}", parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2);
             if ((client.Town != null) && (client.Service != null))
             {         
-                await clientBot.SendTextMessageAsync(query.Message.Chat.Id, $"[{client.Name}](tg://user?id={client.Id})\n{client.Town}\n{client.Service}", parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2);
+                await clientBot.SendTextMessageAsync(query.Message.Chat.Id, $"[{client.Name}](tg://user?id={client.Id})\n{client.Town}\n{client.Service}\n{EmpName}", parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2);
             }
             else { 
                 await clientBot.SendTextMessageAsync(query.Message.Chat.Id, $"[{client.Name}](tg://user?id={client.Id})", parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2); 
@@ -217,8 +227,14 @@ namespace VadgerWorkspace.Domain.Commands.Admin
             var client = clientRepository.GetClientByIdSync(clientId);
 
             var employeeRepository = new EmployeeRepository(context);
+            string empName="";
+            if (client.EmployeeId != null)
+            {
+                var employee = await employeeRepository.GetEmployeeByIdAsync((long)client.EmployeeId);
+                empName = $"Сотрудник: {employee.Name}";
+            }
 
-            var requestDesc = $"выберете сотрудника для клиента {client.Name}\n{client.Town}\n{client.Service} ";
+            var requestDesc = $"выберете сотрудника для клиента {client.Name}\n{client.Town}\n{client.Service}\n{empName} ";
 
             var employees = employeeRepository.FindAll().Where(e => e.IsVerified == true);
             var adminsGlob = employeeRepository.GetAllGlobalAdmins();

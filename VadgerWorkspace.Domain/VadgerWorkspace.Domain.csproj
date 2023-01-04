@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\Admin\Новая папка\" />
     <Folder Include="Commands\Employee\RequiresWaiting\" />
   </ItemGroup>
 

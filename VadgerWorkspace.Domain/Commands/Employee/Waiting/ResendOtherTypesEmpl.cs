@@ -11,6 +11,7 @@ using VadgerWorkspace.Data.Entities;
 using VadgerWorkspace.Data.Repositories;
 using VadgerWorkspace.Domain.Abstractions;
 using VadgerWorkspace.Infrastructure;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace VadgerWorkspace.Domain.Commands.Employee.Waiting
 {
@@ -18,35 +19,67 @@ namespace VadgerWorkspace.Domain.Commands.Employee.Waiting
     {
         public override async Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
-            var text = $"{message.Text}";
+
+            
+
             EmployeeRepository employeeRepository = new EmployeeRepository(context);
             var employee = employeeRepository.GetEmployeeByIdSync(message.Chat.Id);
 
             ClientRepository clientRepository = new ClientRepository(context);
             var client = clientRepository.GetClientByIdSync(employee.ClientId);
 
-            MessageRepository messageRepository = new MessageRepository(context);
-            var saveMessage = new SavedMessage() { Text = text, ClientId = client.Id, IsFromClient = false, EmployeeId = employee.Id, Time = message.Date };
-            messageRepository.Create(saveMessage);
-            await messageRepository.SaveAsync();
+            //if (employee != null) 
+            //{
+            //    switch (message.Type)
+            //    {
+            //        case MessageType.Voice:
+            //            //await employeeBot.SendVoiceAsync(employee.Id, message.Voice.FileId);
+            //            var filePath = Path.Combine(Path.GetTempPath(), message.Voice.FileId + ".ogg");
 
-            await clientBot.SendTextMessageAsync(client.Id, "От сотрудника\n" + text);
+            //            // InputOnlineFile f = new InputOnlineFile(file);
+            //            //await employeeBot.SendVoiceAsync(employee.Id, file);
+            //            using (var file = System.IO.File.Open(filePath, FileMode.OpenOrCreate))
+            //            {
+            //                var filetg = await clientBot.GetFileAsync(message.Voice.FileId);
+            //                //InputOnlineFile f = new InputOnlineFile(file);
+            //                await clientBot.DownloadFileAsync(filetg.FilePath, file);
+            //                await employeeBot.SendVoiceAsync(employee.Id, file);
+            //                Console.WriteLine($"Find Voice at {filePath}");
+            //            }
+            //            break;
+            //    }
+
+            //}
+
+            if (client != null)
+            {
+
+                var adminsGlob = employeeRepository.GetAllGlobalAdmins();
+                var text = $"От сотрудника {employee.Name}\n сообщение не текстового типа для {client.Name}";
+                foreach (var admin in adminsGlob)
+                {
+                    await clientBot.SendTextMessageAsync(admin.Id, text);
+                    await clientBot.CopyMessageAsync(admin.Id, employee.Id, message.MessageId);
+                }
+                if (client != null)
+                {
+                    await clientBot.SendTextMessageAsync(client.Id, text);
+                    await clientBot.CopyMessageAsync(client.Id, employee.Id, message.MessageId);
+
+                }
+            } else await clientBot.SendTextMessageAsync(employee.Id, "у вас сейчас нет клиента");
         }
 
         public override bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
-            if (message.Type != MessageType.Text)
-                return false;
-            EmployeeRepository employeeRepository = new EmployeeRepository(context);
-            var employee = employeeRepository.GetEmployeeByIdSync(message.Chat.Id);
+            if (message.Type == MessageType.Audio ||
+                message.Type == MessageType.Document ||
+                message.Type == MessageType.Photo ||
+                message.Type == MessageType.Video ||
+                message.Type == MessageType.Voice)
+                return true;
+            else return false;
 
-            //Найти к имплоику клиента с чатинг стейдж
-            ClientRepository clientRepository = new ClientRepository(context);
-            if (employee.ClientId == 0) return false;
-            var client = clientRepository.GetClientByIdSync(employee.ClientId);
-
-            //clientRepository.Dispose();
-            return client.Stage == Data.Stages.Chating && employee.Stage == Data.Stages.Chating;
         }
     }
 }

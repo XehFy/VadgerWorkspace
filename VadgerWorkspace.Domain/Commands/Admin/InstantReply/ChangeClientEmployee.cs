@@ -34,11 +34,16 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
             }
 
             ClientRepository clientRepository = new ClientRepository(context);
-            var clients = clientRepository.FindAll();
+            var clientsNullEmp = clientRepository.FindAll().Where(c => c.EmployeeId == null);
 
-            var clikeyboard = KeyboardAdmin.CreateChangeEmplKeyboard(clients);
+            var clikeyboardNullEmp = KeyboardAdmin.CreateChangeEmplKeyboard(clientsNullEmp);
 
-            await adminBot.SendTextMessageAsync(message.Chat.Id, "Выберите клиента для изменения", replyMarkup: new InlineKeyboardMarkup(clikeyboard));
+            await adminBot.SendTextMessageAsync(message.Chat.Id, "У этих клиентов НЕ назначен сотрудник", replyMarkup: new InlineKeyboardMarkup(clikeyboardNullEmp));
+            var clientsWithEmp = clientRepository.FindAll().Where(c => c.EmployeeId != null);
+
+            var clikeyboardWithEmp = KeyboardAdmin.CreateChangeEmplKeyboard(clientsWithEmp);
+
+            await adminBot.SendTextMessageAsync(message.Chat.Id, "Тут назначен сотрудник", replyMarkup: new InlineKeyboardMarkup(clikeyboardWithEmp));
         }
 
         public override bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)

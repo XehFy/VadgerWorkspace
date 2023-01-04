@@ -1,4 +1,5 @@
 ﻿using VadgerWorkspace.Domain.Abstractions;
+using VadgerWorkspace.Domain.Commands.Client.Waiting;
 using VadgerWorkspace.Domain.Commands.Employee.Waiting;
 
 namespace VadgerWorkspace.Domain.Services
@@ -11,7 +12,7 @@ namespace VadgerWorkspace.Domain.Services
         {
             _commands = new List<INorTelegramCommand>
             {
-                new ResendToClient()
+                new ResendToClient(),
             };
         }
 

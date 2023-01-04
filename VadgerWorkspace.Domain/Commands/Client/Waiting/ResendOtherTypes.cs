@@ -22,13 +22,12 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
     {
         public override async Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
-            await clientBot.SendTextMessageAsync(message.From.Id, "Данный тип сообщений не поддерживается");
+            
+            ClientRepository clientRepository = new ClientRepository(context);
+            var client = clientRepository.GetClientByIdSync(message.Chat.Id);
 
-            //ClientRepository clientRepository = new ClientRepository(context);
-            //var client = clientRepository.GetClientByIdSync(message.Chat.Id);
-
-            //EmployeeRepository employeeRepository = new EmployeeRepository(context);
-            //var employee = employeeRepository.GetEmployeeByIdSync((long)client.EmployeeId);
+            EmployeeRepository employeeRepository = new EmployeeRepository(context);
+            var employee = employeeRepository.GetEmployeeByIdSync((long)client.EmployeeId);
 
             //if (employee != null) 
             //{
@@ -53,19 +52,19 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
 
             //}
 
-            //var adminsGlob = employeeRepository.GetAllGlobalAdmins();
-            //var text = $"От клиента {client.Name}\n сообщение не текстового типа";
+            var adminsGlob = employeeRepository.GetAllGlobalAdmins();
+            var text = $"От клиента {client.Name}\n сообщение не текстового типа";
             //foreach (var admin in adminsGlob)
             //{
             //    await clientBot.SendTextMessageAsync(admin.Id, text);
             //    await clientBot.CopyMessageAsync(admin.Id, client.Id, message.MessageId);
             //}
-            //if (employee != null)
-            //{
-            //    await clientBot.SendTextMessageAsync(employee.Id, text);
-            //    await clientBot.CopyMessageAsync(employee.Id, client.Id, message.MessageId);
+            if (employee != null)
+            {
+                await clientBot.SendTextMessageAsync(employee.Id, text);
+                await clientBot.CopyMessageAsync(employee.Id, client.Id, message.MessageId);
 
-            //}
+            }
         }
 
         public override bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
