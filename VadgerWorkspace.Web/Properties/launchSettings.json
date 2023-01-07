@@ -4,7 +4,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "https://vadger.somee.com"
+      "applicationUrl": "http://127.0.0.1:8443"
       //"sslPort": 44378
     }
   },
@@ -14,7 +14,7 @@
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "/ClientBot",
-      "applicationUrl": "https://vadger.somee.com",
+      "applicationUrl": "http://127.0.0.1:8443",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

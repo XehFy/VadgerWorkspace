@@ -32,7 +32,7 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
             }
 
             ClientRepository clientRepository = new ClientRepository(context);
-            var clients = clientRepository.FindAll().Where(c => c.Town != null && (c.IsActive == true || c.IsActive == null));
+            var clients = clientRepository.FindAll().Where(c => c.Town != null && (c.IsActive == true || c.IsActive == null)).OrderBy(c => c.LastOrder);
 
             var clikeyboard = KeyboardAdmin.CreateGetLinkKeyboard(clients);
             await adminBot.SendTextMessageAsync(message.Chat.Id, "Выберите клиента, на которого хотите получить ссылку", replyMarkup: new InlineKeyboardMarkup(clikeyboard));
