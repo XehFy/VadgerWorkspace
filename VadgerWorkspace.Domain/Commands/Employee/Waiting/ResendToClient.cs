@@ -25,9 +25,14 @@ namespace VadgerWorkspace.Domain.Commands.Employee.Waiting
             ClientRepository clientRepository = new ClientRepository(context);
             var client = clientRepository.GetClientByIdSync(employee.ClientId);
 
+            
+
             MessageRepository messageRepository = new MessageRepository(context);
             var saveMessage = new SavedMessage() { Text = text, ClientId = client.Id, IsFromClient = false, EmployeeId = employee.Id, Time = message.Date };
             messageRepository.Create(saveMessage);
+
+            client.IsReplayed = true;
+            clientRepository.Update(client);
             await messageRepository.SaveAsync();
             try
             {

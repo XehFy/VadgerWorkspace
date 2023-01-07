@@ -30,6 +30,7 @@ namespace VadgerWorkspace.Domain.Services
                 new DeactiveClient(),
                 new UpdateKeyboards(),
                 new InitDates(),
+                new InitReplayes(),
             };
         }
 

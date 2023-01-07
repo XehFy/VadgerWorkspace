@@ -65,7 +65,8 @@ namespace VadgerWorkspace.Domain.Commands.Employee.Waiting
                 {
                     await clientBot.SendTextMessageAsync(client.Id, text);
                     await clientBot.CopyMessageAsync(client.Id, employee.Id, message.MessageId);
-
+                    client.IsReplayed = true;
+                    clientRepository.Update(client);
                 }
             } else await clientBot.SendTextMessageAsync(employee.Id, "у вас сейчас нет клиента");
         }

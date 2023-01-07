@@ -32,6 +32,7 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
 
             messageRepository.Create(saveMessage);
             client.IsActive = true;
+            client.IsReplayed = false;
             clientRepository.Update(client);
             await messageRepository.SaveAsync();
 

@@ -32,5 +32,6 @@ namespace VadgerWorkspace.Data.Repositories
         {
             return await Task.FromResult(FindByCondition(client => client.EmployeeId == employeeId && (client.IsActive == true || client.IsActive == null)).OrderBy(c => c.LastOrder));
         }
+
     }
 }
