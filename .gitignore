@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 /VadgerDb.db-wal
 *.db-shm
+/VadgerWorkspace.Web/Properties/launchSettings.json
+/.gitignore
