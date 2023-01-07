@@ -27,7 +27,7 @@ builder.Services.AddScoped<ICommandService, ClientNoCommandService>();
 builder.Services.AddScoped<ICommandService, EmployeeNoCommandService>();
 
 builder.Services.AddDbContext<VadgerContext>(opt
-    => opt.UseSqlite($"Filename = d:/DZHosts/LocalUser/xehfy/www.vadger.somee.com/VadgerDb.db"));
+    => opt.UseSqlite($"Filename = C:/Users/Home/source/repos/VadgerWorkspace/VadgerDb.db"));
 
 var app = builder.Build();
 

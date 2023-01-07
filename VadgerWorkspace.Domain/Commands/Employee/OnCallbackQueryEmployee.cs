@@ -47,11 +47,27 @@ namespace VadgerWorkspace.Domain.Commands.Employee
             var employee = await employeeRepository.GetEmployeeByIdAsync(employeeId);
             employee.Stage = Stages.Chating;
             employee.ClientId = clientId;
-            employeeRepository.Update(employee);
+            
 
             await employeeBot.SendTextMessageAsync(employeeId, $"Вы открыли чат с клиентом {client.Name}");//, дальнейшие сообщения будут направлены клиенту и записываться для контроля качества.
 
+            MessageRepository messageRepository = new MessageRepository(context);
+            var messagesFromClient = await messageRepository.GetAllMessagesByClientId(clientId);
+            var messages = messagesFromClient.Where(client => client.EmployeeId == employeeId);
 
+            StringBuilder ToSend = new StringBuilder();
+            foreach (SavedMessage mess in messages)
+            {
+                string name = "сотрудник";
+                if ((bool)mess.IsFromClient)
+                {
+                    name = client.Name;
+                }
+                string newMess = $"{name}:\n{mess.Time}\n'{mess.Text}'\n\n";
+                ToSend.Append(newMess);
+            }
+            await employeeBot.SendTextMessageAsync(query.Message.Chat.Id, ToSend.ToString());
+            employeeRepository.Update(employee);
             await clientRepository.SaveAsync();
             clientRepository.Dispose();
         }

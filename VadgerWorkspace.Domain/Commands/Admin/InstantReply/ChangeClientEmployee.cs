@@ -34,7 +34,7 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
             }
 
             ClientRepository clientRepository = new ClientRepository(context);
-            var clientsNullEmp = clientRepository.FindAll().Where(c => c.EmployeeId == null && c.Town != null && (c.IsActive == true || c.IsActive == null));
+            var clientsNullEmp = clientRepository.FindAll().Where(c => c.EmployeeId == null && c.Town != null && (c.IsActive == true || c.IsActive == null)).OrderBy(c => c.LastOrder);
 
             if (clientsNullEmp.Any()) 
             {
@@ -49,7 +49,7 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
 
 
 
-            var clientsWithEmp = clientRepository.FindAll().Where(c => c.EmployeeId != null && (c.IsActive == true || c.IsActive == null));
+            var clientsWithEmp = clientRepository.FindAll().Where(c => c.EmployeeId != null && (c.IsActive == true || c.IsActive == null)).OrderBy(c => c.LastOrder);
 
             var clikeyboardWithEmp = KeyboardAdmin.CreateChangeEmplKeyboard(clientsWithEmp);
 

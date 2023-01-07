@@ -33,7 +33,7 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
             }
 
             ClientRepository clientRepository = new ClientRepository(context);
-            var clients = clientRepository.FindAll().Where(c => c.IsActive == false );
+            var clients = clientRepository.FindAll().Where(c => c.IsActive == false ).OrderBy(c=> c.LastOrder);
 
             var clikeyboard = KeyboardAdmin.ActivateClient(clients);
 

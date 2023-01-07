@@ -45,6 +45,7 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
             client.Stage = Data.Stages.Waiting;
             client.LastOrder= DateTime.Now;
             client.IsActive = true;
+            client.IsReplayed = false;
             clientRepository.Update(client);
             await clientRepository.SaveAsync();
 

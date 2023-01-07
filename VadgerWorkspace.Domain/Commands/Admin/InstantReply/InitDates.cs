@@ -15,9 +15,9 @@ using VadgerWorkspace.Infrastructure.Keyboards;
 
 namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
 {
-    internal class DeactiveClient : TelegramCommand
+    internal class InitDates : TelegramCommand
     {
-        public override string Name => "Отключить клиента";
+        public override string Name => "Инициализировать даты";
 
         public async override Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
@@ -32,11 +32,20 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
             }
 
             ClientRepository clientRepository = new ClientRepository(context);
-            var clients = clientRepository.FindAll().Where(c => c.Town != null && (c.IsActive == true || c.IsActive == null)).OrderBy(c => c.LastOrder);
+            var clients = clientRepository.FindAll().Where(c => c.LastOrder == null);
+            MessageRepository messRepository = new MessageRepository(context);
+            foreach (var client in clients)
+            {
+                var mess = await messRepository.FindByCondition(m => m.ClientId == client.Id && m.Time!=null).FirstOrDefaultAsync();
+                if (mess != null) 
+                {
+                    client.LastOrder = mess.Time;
+                    clientRepository.Update(client);
+                }
+            }
+            clientRepository.SaveSync();
 
-            var clikeyboard = KeyboardAdmin.DeactivateClient(clients);
-
-            await adminBot.SendTextMessageAsync(message.Chat.Id, "Выберите клиента", replyMarkup: new InlineKeyboardMarkup(clikeyboard));
+            await adminBot.SendTextMessageAsync(message.Chat.Id, "даты инициализированны");
 
             //var clikeyboardNR = KeyboardAdmin.CreateGetLinkKeyboard(clientsNotRegistred);
             //if (clientsNotRegistred.Any()) 
