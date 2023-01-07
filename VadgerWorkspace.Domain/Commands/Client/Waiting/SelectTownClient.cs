@@ -43,6 +43,8 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
             var client = clientRepository.GetClientByIdSync(clientId);
             client.Town = message.Text;
             client.Stage = Data.Stages.Waiting;
+            client.LastOrder= DateTime.Now;
+            client.IsActive = true;
             clientRepository.Update(client);
             await clientRepository.SaveAsync();
 

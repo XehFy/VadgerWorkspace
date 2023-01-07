@@ -26,6 +26,9 @@ namespace VadgerWorkspace.Domain.Services
                 new ShowMessages(),
                 new GetClientLink(),
                 new ChangeClientEmployee(),
+                new ActivateClient(),
+                new DeactiveClient(),
+                new UpdateKeyboards(),
             };
         }
 

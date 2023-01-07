@@ -41,18 +41,16 @@ namespace VadgerWorkspace.Domain.Commands.Client.InstantReply
                     Name = message.Chat.FirstName,
                     Id = message.Chat.Id,
                     Stage = Data.Stages.starting,
+                    LastOrder = DateTime.Now,
                     Link = message.Chat.LinkedChatId,
                 });
                 await clientRepository.SaveAsync();
             }
             else
             {
-                if (client.Stage == Data.Stages.Chating)
-                {
-                    await clientBot.SendTextMessageAsync(clientId, "Пожалуйста, дождитесь ответа от нашего работника", replyMarkup: KeyboardClient.Empty);
-                    return;
-                }
-                
+                client.Stage = Data.Stages.starting;
+                client.LastOrder = DateTime.Now;
+                clientRepository.Update(client);
             }
             clientRepository.Dispose();
 

@@ -15,5 +15,8 @@ namespace VadgerWorkspace.Data.Entities
         public long? Link { get; set; }
         public Stages? Stage { get; set; }
         public long? EmployeeId { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? LastOrder { get; set; }
+        public string? Tag { get; set; }
     }
 }

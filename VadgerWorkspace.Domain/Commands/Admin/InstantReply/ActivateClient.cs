@@ -13,11 +13,12 @@ using VadgerWorkspace.Domain.Abstractions;
 using VadgerWorkspace.Infrastructure;
 using VadgerWorkspace.Infrastructure.Keyboards;
 
+
 namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
 {
-    public class GetClientLink : TelegramCommand
+    internal class ActivateClient : TelegramCommand
     {
-        public override string Name => "Получить ссылку на клиента";
+        public override string Name => "Включить клиента";
 
         public async override Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
@@ -27,16 +28,16 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
 
             if (currentAdmin == null)
             {
-                await adminBot.SendTextMessageAsync(message.Chat.Id, "У вас нет прав для получения ссылок", replyMarkup: KeyboardAdmin.Empty);
+                await adminBot.SendTextMessageAsync(message.Chat.Id, "У вас нет прав", replyMarkup: KeyboardAdmin.Empty);
                 return;
             }
 
             ClientRepository clientRepository = new ClientRepository(context);
-            var clients = clientRepository.FindAll().Where(c => c.Town != null && (c.IsActive == true || c.IsActive == null));
+            var clients = clientRepository.FindAll().Where(c => c.IsActive == false );
 
-            var clikeyboard = KeyboardAdmin.CreateGetLinkKeyboard(clients);
-            await adminBot.SendTextMessageAsync(message.Chat.Id, "Выберите клиента, на которого хотите получить ссылку", replyMarkup: new InlineKeyboardMarkup(clikeyboard));
-            var clientsNotRegistred = clientRepository.FindAll().Where(c => c.Town == null);
+            var clikeyboard = KeyboardAdmin.ActivateClient(clients);
+
+            await adminBot.SendTextMessageAsync(message.Chat.Id, "Выберите клиента", replyMarkup: new InlineKeyboardMarkup(clikeyboard));
 
             //var clikeyboardNR = KeyboardAdmin.CreateGetLinkKeyboard(clientsNotRegistred);
             //if (clientsNotRegistred.Any()) 

@@ -15,7 +15,9 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
             new KeyboardButton[] {"Посмотреть переписку"},
             new KeyboardButton[] {"Получить ссылку на клиента" },
             new KeyboardButton[] {"Изменить назначенного сотрудника"},
-            new KeyboardButton[] {"Управление сотрудниками"}
+            new KeyboardButton[] {"Управление сотрудниками"},
+            new KeyboardButton[] {"Включить клиента"},
+            new KeyboardButton[] { "Отключить клиента" },
         })
         {
             ResizeKeyboard = true
@@ -294,6 +296,66 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
             keys[0] = InlineKeyboardButton.WithCallbackData("Подтвердить своего сотрудника", $"/ApproveEmpl {employeeId} 1");
             keys[1] = InlineKeyboardButton.WithCallbackData("Отклонить запрос", $"/ApproveEmpl {employeeId} 0");
             return keys;
+        }
+
+        public static InlineKeyboardButton[][] DeactivateClient(IEnumerable<Client> clients)
+        {
+            var clientList = new InlineKeyboardButton[clients.Count() / 3 + 1][];
+            var clientsArr = clients.ToList();
+
+            for (int i = 0; i < clients.Count() / 3 + 1; i++)
+            {
+                if (i == clients.Count() / 3)
+                {
+                    clientList[i] = new InlineKeyboardButton[clients.Count() - (clients.Count() / 3) * 3];
+                    for (int j = 0; j < clients.Count() - (clients.Count() / 3) * 3; j++)
+                    {
+                        clientList[i][j] = InlineKeyboardButton.WithCallbackData(clientsArr[i * 3 + j].Name, $"/DeactivateClient {clientsArr[i * 3 + j].Id}");
+                    }
+                    break;
+                }
+                else
+                {
+                    clientList[i] = new InlineKeyboardButton[3];
+                }
+                for (int j = 0; j < 3; j++)
+                {
+                    clientList[i][j] = InlineKeyboardButton.WithCallbackData(clientsArr[i * 3 + j].Name, $"/DeactivateClient {clientsArr[i * 3 + j].Id}");
+                }
+            }
+            clientsArr.Clear();
+
+            return clientList;
+        }
+
+        public static InlineKeyboardButton[][] ActivateClient(IEnumerable<Client> clients)
+        {
+            var clientList = new InlineKeyboardButton[clients.Count() / 3 + 1][];
+            var clientsArr = clients.ToList();
+
+            for (int i = 0; i < clients.Count() / 3 + 1; i++)
+            {
+                if (i == clients.Count() / 3)
+                {
+                    clientList[i] = new InlineKeyboardButton[clients.Count() - (clients.Count() / 3) * 3];
+                    for (int j = 0; j < clients.Count() - (clients.Count() / 3) * 3; j++)
+                    {
+                        clientList[i][j] = InlineKeyboardButton.WithCallbackData(clientsArr[i * 3 + j].Name, $"/ActivateClient {clientsArr[i * 3 + j].Id}");
+                    }
+                    break;
+                }
+                else
+                {
+                    clientList[i] = new InlineKeyboardButton[3];
+                }
+                for (int j = 0; j < 3; j++)
+                {
+                    clientList[i][j] = InlineKeyboardButton.WithCallbackData(clientsArr[i * 3 + j].Name, $"/ActivateClient {clientsArr[i * 3 + j].Id}");
+                }
+            }
+            clientsArr.Clear();
+
+            return clientList;
         }
 
     }   

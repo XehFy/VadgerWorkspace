@@ -61,6 +61,12 @@ namespace VadgerWorkspace.Domain.Commands.Admin
                 case "/ApproveEmpl":
                     await ApproveEmpl(cbargs, query, clientBot, employeeBot, adminBot, context);
                     break;
+                case "/DeactivateClient":
+                    await DeactivateClient(cbargs, query, clientBot, employeeBot, adminBot, context);
+                    break;
+                case "/ActivateClient":
+                    await ActivateClient(cbargs, query, clientBot, employeeBot, adminBot, context);
+                    break;
 
                 default:
                     break;
@@ -124,7 +130,11 @@ namespace VadgerWorkspace.Domain.Commands.Admin
 
             foreach (var adm in Admins)
             {
-                await adminBot.SendTextMessageAsync(adm.Id, $"{actor.Name} \nПереназначил сотруднику: {emp.Name}\n клиента: {client.Name}, {client.Town}\n{client.Service}");
+                try
+                {
+                    await adminBot.SendTextMessageAsync(adm.Id, $"{actor.Name} \nПереназначил сотруднику: {emp.Name}\n клиента: {client.Name}, {client.Town}\n{client.Service}");
+                }
+                catch { }
             }
 
             MessageRepository messageRepository = new MessageRepository(context);
@@ -203,6 +213,7 @@ namespace VadgerWorkspace.Domain.Commands.Admin
             {
                 EmployeeRepository employeeRepository = new EmployeeRepository(context);
                 var employee = await employeeRepository.GetEmployeeByIdAsync((long)client.EmployeeId);
+                if(employee == null) { return; }
                 EmpName = $"Сотрудник: {employee.Name}"; 
             }
             else { EmpName = "Сотрудник не назначен"; }
@@ -219,6 +230,55 @@ namespace VadgerWorkspace.Domain.Commands.Admin
             clientRepository.Dispose();
         }
 
+        public async Task DeactivateClient(string[] cbargs, CallbackQuery query, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, VadgerContext context)
+        {
+            ClientRepository clientRepository = new ClientRepository(context);
+            var clientId = Convert.ToInt64(cbargs[1]);
+            var client = await clientRepository.GetClientByIdAsync(clientId);
+
+            if (client.EmployeeId != null)
+            {
+                EmployeeRepository employeeRepository = new EmployeeRepository(context);
+                var employee = await employeeRepository.GetEmployeeByIdAsync((long)client.EmployeeId);
+                if (employee != null) {
+                    await employeeBot.SendTextMessageAsync(employee.Id, $"клиент отключен\n {client.Name}\n{client.Town}\n{client.Service}");
+                }
+            }
+
+            await adminBot.SendTextMessageAsync(query.Message.Chat.Id, $"клиент отключен\n {client.Name}\n{client.Town}\n{client.Service}");
+
+            client.IsActive = false;
+            clientRepository.Update(client);
+            clientRepository.SaveSync();
+
+            clientRepository.Dispose();
+        }
+
+        public async Task ActivateClient(string[] cbargs, CallbackQuery query, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, VadgerContext context)
+        {
+            ClientRepository clientRepository = new ClientRepository(context);
+            var clientId = Convert.ToInt64(cbargs[1]);
+            var client = await clientRepository.GetClientByIdAsync(clientId);
+
+            if (client.EmployeeId != null)
+            {
+                EmployeeRepository employeeRepository = new EmployeeRepository(context);
+                var employee = await employeeRepository.GetEmployeeByIdAsync((long)client.EmployeeId);
+                if (employee != null)
+                {
+                    await employeeBot.SendTextMessageAsync(employee.Id, $"клиент включен\n {client.Name}\n{client.Town}\n{client.Service}");
+
+                }
+            }
+
+            await adminBot.SendTextMessageAsync(query.Message.Chat.Id, $"клиент включен\n {client.Name}\n{client.Town}\n{client.Service}");
+
+            client.IsActive = true;
+            clientRepository.Update(client);
+            clientRepository.SaveSync();
+            clientRepository.Dispose();
+        }
+
         public async Task ChangeEmpl(string[] cbargs, CallbackQuery query, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, VadgerContext context)
         {
             ClientRepository clientRepository = new ClientRepository(context);
@@ -228,6 +288,7 @@ namespace VadgerWorkspace.Domain.Commands.Admin
 
             var employeeRepository = new EmployeeRepository(context);
             string empName="";
+            if(client == null) { return; }
             if (client.EmployeeId != null)
             {
                 var employee = await employeeRepository.GetEmployeeByIdAsync((long)client.EmployeeId);
@@ -243,8 +304,11 @@ namespace VadgerWorkspace.Domain.Commands.Admin
             //{
             //    await adminBot.SendTextMessageAsync(admin.Id, requestDesc, replyMarkup: new InlineKeyboardMarkup(empKeyboard));
             //}
-            await adminBot.SendTextMessageAsync(query.From.Id, requestDesc, replyMarkup: new InlineKeyboardMarkup(empKeyboard));
-
+            try
+            {
+                await adminBot.SendTextMessageAsync(query.From.Id, requestDesc, replyMarkup: new InlineKeyboardMarkup(empKeyboard));
+            }
+            catch (Exception ex) { }
             clientRepository.Dispose();
         }
 

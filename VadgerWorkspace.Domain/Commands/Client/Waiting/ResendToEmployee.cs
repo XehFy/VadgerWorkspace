@@ -22,6 +22,7 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
 
             ClientRepository clientRepository = new ClientRepository(context);
             var client = clientRepository.GetClientByIdSync(message.Chat.Id);
+            
 
             EmployeeRepository employeeRepository = new EmployeeRepository(context);
             var employee = employeeRepository.GetEmployeeByIdSync((long)client.EmployeeId);
@@ -30,7 +31,8 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
             var saveMessage = new SavedMessage() { Text = text, ClientId = client.Id, IsFromClient = true, EmployeeId = employee.Id, Time = message.Date};
 
             messageRepository.Create(saveMessage);
-
+            client.IsActive = true;
+            clientRepository.Update(client);
             await messageRepository.SaveAsync();
 
             text = $"От {client.Name}\n{message.Text}";

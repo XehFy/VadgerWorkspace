@@ -30,7 +30,7 @@ namespace VadgerWorkspace.Data.Repositories
 
         public async Task<IEnumerable<Client>> GetAllClientsForEmployee(long employeeId)
         {
-            return await Task.FromResult(FindByCondition(client => client.EmployeeId == employeeId));
+            return await Task.FromResult(FindByCondition(client => client.EmployeeId == employeeId && (client.IsActive == true || client.IsActive == null)));
         }
     }
 }

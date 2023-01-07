@@ -25,6 +25,9 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
             
             ClientRepository clientRepository = new ClientRepository(context);
             var client = clientRepository.GetClientByIdSync(message.Chat.Id);
+            client.IsActive = true;
+            clientRepository.Update(client);
+            clientRepository.SaveSync();
 
             EmployeeRepository employeeRepository = new EmployeeRepository(context);
             var employee = employeeRepository.GetEmployeeByIdSync((long)client.EmployeeId);
