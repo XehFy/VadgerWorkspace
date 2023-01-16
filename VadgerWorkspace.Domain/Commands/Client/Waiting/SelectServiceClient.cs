@@ -37,6 +37,7 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
         public override async Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
             ClientRepository clientRepository = new ClientRepository(context);
+
             var clientId = message.Chat.Id;
 
             var client = clientRepository.GetClientByIdSync(clientId);

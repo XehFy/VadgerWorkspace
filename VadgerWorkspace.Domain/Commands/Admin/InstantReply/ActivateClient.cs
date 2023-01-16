@@ -28,17 +28,33 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
 
             if (currentAdmin == null)
             {
-                await adminBot.SendTextMessageAsync(message.Chat.Id, "У вас нет прав", replyMarkup: KeyboardAdmin.Empty);
+                var currentLocalAdmin = employeeRepository.GetAllAdmins().FirstOrDefault(a => a.IsLocalAdmin == true && a.Id == message.Chat.Id);
+
+                if (currentLocalAdmin == null)
+                {
+                    await adminBot.SendTextMessageAsync(message.Chat.Id, "Вы не являетесь администратором", replyMarkup: KeyboardAdmin.Empty);
+                    return;
+                }
+
+                var town = currentLocalAdmin.Town;
+
+                ClientRepository clientRepository = new ClientRepository(context);
+                var clients = clientRepository.GetAllClientsWithTown(town).Where(c => c.IsActive == false).OrderBy(c => c.LastOrder);
+
+                var clikeyboard = KeyboardAdmin.ActivateClient(clients);
+                await adminBot.SendTextMessageAsync(message.Chat.Id, "Выберите клиента", replyMarkup: new InlineKeyboardMarkup(clikeyboard));
+                //await adminBot.SendTextMessageAsync(message.Chat.Id, "У вас нет прав", replyMarkup: KeyboardAdmin.Empty);
                 return;
             }
+            else
+            {
+                ClientRepository clientRepository = new ClientRepository(context);
+                var clients = clientRepository.FindAll().Where(c => c.IsActive == false).OrderBy(c => c.LastOrder);
 
-            ClientRepository clientRepository = new ClientRepository(context);
-            var clients = clientRepository.FindAll().Where(c => c.IsActive == false ).OrderBy(c=> c.LastOrder);
+                var clikeyboard = KeyboardAdmin.ActivateClient(clients);
 
-            var clikeyboard = KeyboardAdmin.ActivateClient(clients);
-
-            await adminBot.SendTextMessageAsync(message.Chat.Id, "Выберите клиента", replyMarkup: new InlineKeyboardMarkup(clikeyboard));
-
+                await adminBot.SendTextMessageAsync(message.Chat.Id, "Выберите клиента", replyMarkup: new InlineKeyboardMarkup(clikeyboard));
+            }
             //var clikeyboardNR = KeyboardAdmin.CreateGetLinkKeyboard(clientsNotRegistred);
             //if (clientsNotRegistred.Any()) 
             //{

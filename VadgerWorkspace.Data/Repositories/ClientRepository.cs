@@ -32,6 +32,13 @@ namespace VadgerWorkspace.Data.Repositories
         {
             return await Task.FromResult(FindByCondition(client => client.EmployeeId == employeeId && (client.IsActive == true || client.IsActive == null)).OrderBy(c => c.LastOrder));
         }
+        public IEnumerable<Client> GetAllClientsWithTown(string town)
+        {
+            var arr = town.Split(' ');
+            var clients = _dbContext.Set<Client>().Where(x => x.Town != null).AsEnumerable<Client>();
+            return clients.Where(a => a.Town.Split(' ')
+                .Select(x => x).Intersect(arr).Any());
+        }
 
     }
 }

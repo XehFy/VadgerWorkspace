@@ -26,6 +26,8 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
         public static ReplyKeyboardMarkup LocalMenu = new ReplyKeyboardMarkup(new[]
 {
             new KeyboardButton[] {"Посмотреть переписку"},
+            new KeyboardButton[] {"Включить клиента"},
+            new KeyboardButton[] { "Отключить клиента" },
             //new KeyboardButton[] {"Получить ссылку на клиента" },
             //new KeyboardButton[] {"Посмотреть клиентов работника"},
             //new KeyboardButton[] {"Управление сотрудниками"}

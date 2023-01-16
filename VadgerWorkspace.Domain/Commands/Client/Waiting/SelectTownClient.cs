@@ -59,7 +59,8 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
             //Здесь отправка инлайна с работниками и этим клиентом админу
             EmployeeRepository employeeRepository = new EmployeeRepository(context);
             var admins = employeeRepository.GetAllLocalsWithTown(client.Town);
-            if (admins.Any())
+
+            if (admins.Any() && client.Service != "IT разработка💻")
             {
                 var employees = employeeRepository.GetAllEmpsWithTown(client.Town);
                 var empKeyboard = KeyboardAdmin.CreateChooseEmployeeKeyboard(employees, client);
