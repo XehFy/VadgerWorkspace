@@ -31,23 +31,30 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
             EmployeeRepository employeeRepository = new EmployeeRepository(context);
             var employeeId = message.Chat.Id;
 
-            var admin = await employeeRepository.GetEmployeeByIdAsync(employeeId);
+            var requester = await employeeRepository.GetEmployeeByIdAsync(employeeId);
 
-            if (admin == null)
+            if (requester == null)
             {
                 return;
             }
 
+            var admins = employeeRepository.GetAllAdmins();
+            string text = "Обновлено. Теперь можно включать и отключать клиентов, чтобы показывало меньше кнопок";
 
-            if (admin.IsAdmin == true && admin.IsLocalAdmin == false)
-            {
-                await adminBot.SendTextMessageAsync(employeeId, "Обновлено", replyMarkup: KeyboardAdmin.Menu);
-            }
 
-            if (admin.IsAdmin == true && admin.IsLocalAdmin == true)
+            foreach (var admin in admins) 
             {
-                await adminBot.SendTextMessageAsync(employeeId, "Обновлено", replyMarkup: KeyboardAdmin.LocalMenu);
+                if (admin.IsAdmin == true && admin.IsLocalAdmin == false)
+                {
+                    await adminBot.SendTextMessageAsync(admin.Id, text, replyMarkup: KeyboardAdmin.Menu);
+                }
+
+                if (admin.IsAdmin == true && admin.IsLocalAdmin == true)
+                {
+                    await adminBot.SendTextMessageAsync(admin.Id, text, replyMarkup: KeyboardAdmin.LocalMenu);
+                }
             }
+            
             //admin.Stage = Data.Stages.SelectService;
             //employeeRepository.Update(admin);
             //await employeeRepository.SaveAsync();

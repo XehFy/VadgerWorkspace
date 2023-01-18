@@ -8,6 +8,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
+using VadgerWorkspace.Data.Entities;
 using VadgerWorkspace.Data.Repositories;
 using VadgerWorkspace.Domain.Abstractions;
 using VadgerWorkspace.Infrastructure;
@@ -15,9 +16,9 @@ using VadgerWorkspace.Infrastructure.Keyboards;
 
 namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
 {
-    internal class DeactiveClient : TelegramCommand
+    internal class DeactivateMass : TelegramCommand
     {
-        public override string Name => "Отключить клиента";
+        public override string Name => "Отключить старых клиентов";
 
         public async override Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
@@ -27,32 +28,36 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
 
             if (currentAdmin == null)
             {
-                var currentLocalAdmin = employeeRepository.GetAllAdmins().FirstOrDefault(a => a.IsLocalAdmin == true && a.Id == message.Chat.Id);
-
-                if (currentLocalAdmin == null)
-                {
-                    await adminBot.SendTextMessageAsync(message.Chat.Id, "Вы не являетесь администратором", replyMarkup: KeyboardAdmin.Empty);
-                    return;
-                }
-
-                var town = currentLocalAdmin.Town;
-
-                ClientRepository clientRepository = new ClientRepository(context);
-                var clients = clientRepository.GetAllClientsWithTown(town).Where(c => c.IsActive == true || c.IsActive == null).OrderBy(c => c.LastOrder);
-
-                var clikeyboard = KeyboardAdmin.DeactivateClient(clients);
-                await adminBot.SendTextMessageAsync(message.Chat.Id, "Выберите клиента", replyMarkup: new InlineKeyboardMarkup(clikeyboard));
-                //await adminBot.SendTextMessageAsync(message.Chat.Id, "У вас нет прав", replyMarkup: KeyboardAdmin.Empty);
+                await adminBot.SendTextMessageAsync(message.Chat.Id, "У вас нет прав", replyMarkup: KeyboardAdmin.Empty);
                 return;
             }
             else
             {
                 ClientRepository clientRepository = new ClientRepository(context);
-                var clients = clientRepository.FindAll().Where(c => (c.IsActive == true || c.IsActive == null)&& c.Town != null).OrderBy(c => c.LastOrder);
-
-                var clikeyboard = KeyboardAdmin.DeactivateClient(clients);
-
-                await adminBot.SendTextMessageAsync(message.Chat.Id, "Выберите клиента", replyMarkup: new InlineKeyboardMarkup(clikeyboard));
+                var clients = clientRepository.FindAll().Where(c => (c.IsActive == true || c.IsActive == null) && c.LastOrder != null);
+                var messageRep = new MessageRepository(context);
+                StringBuilder ToSend = new StringBuilder();
+                int Range = 7;
+                DateTime deactivateDate = DateTime.Now.AddDays(-Range);
+                foreach (var client in clients)
+                {
+                    var lastMessage = messageRep.FindAll().Where(message => message.ClientId == client.Id).OrderBy(m => m.Time).LastOrDefault() ;
+                    if(lastMessage != null)
+                    {
+                        if (lastMessage.Time < deactivateDate)
+                        {
+                            client.IsActive = false;
+                            clientRepository.Update(client);
+                        }
+                    }
+                }
+                clientRepository.SaveSync();
+                var admins = employeeRepository.GetAllAdmins();
+                foreach (var admin in admins)
+                {
+                    await adminBot.SendTextMessageAsync(admin.Id, $"Клиенты, не активные более {Range} дней были отключены. Вы можете включить необходимых самостоятельно");
+                }
+                
             }
             //var clikeyboardNR = KeyboardAdmin.CreateGetLinkKeyboard(clientsNotRegistred);
             //if (clientsNotRegistred.Any()) 

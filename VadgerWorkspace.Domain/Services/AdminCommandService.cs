@@ -31,6 +31,7 @@ namespace VadgerWorkspace.Domain.Services
                 new UpdateKeyboards(),
                 new InitDates(),
                 new InitReplayes(),
+                new DeactivateMass(),
             };
         }
 
