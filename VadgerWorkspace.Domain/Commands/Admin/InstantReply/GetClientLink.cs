@@ -34,9 +34,32 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
             ClientRepository clientRepository = new ClientRepository(context);
             var clients = clientRepository.FindAll().Where(c => c.Town != null && (c.IsActive == true || c.IsActive == null)).OrderBy(c => c.LastOrder);
 
-            var clikeyboard = KeyboardAdmin.CreateGetLinkKeyboard(clients);
-            await adminBot.SendTextMessageAsync(message.Chat.Id, "Выберите клиента, на которого хотите получить ссылку", replyMarkup: new InlineKeyboardMarkup(clikeyboard));
-            var clientsNotRegistred = clientRepository.FindAll().Where(c => c.Town == null);
+            foreach (var service in KeyboardClient.Services)
+            {
+                List<Data.Entities.Client> clientWithService = new List<Data.Entities.Client>();
+                foreach (var client in clients)
+                {
+                    if (client.Service == service)
+                    {
+                        clientWithService.Add(client);
+                    }
+                }
+                var clikeyboard = KeyboardAdmin.CreateGetLinkKeyboard(clientWithService);
+                await adminBot.SendTextMessageAsync(message.Chat.Id, service, replyMarkup: new InlineKeyboardMarkup(clikeyboard));
+            }
+            List<Data.Entities.Client> clientOtherService = new List<Data.Entities.Client>();
+
+            foreach (var client in clients)
+            {
+                if (!KeyboardClient.Services.Contains(client.Service))
+                {
+                    clientOtherService.Add(client);
+                }
+            }
+            var clikeyboardOther = KeyboardAdmin.CreateGetLinkKeyboard(clientOtherService);
+            await adminBot.SendTextMessageAsync(message.Chat.Id, "Другие", replyMarkup: new InlineKeyboardMarkup(clikeyboardOther));
+
+            //var clientsNotRegistred = clientRepository.FindAll().Where(c => c.Town == null);
 
             //var clikeyboardNR = KeyboardAdmin.CreateGetLinkKeyboard(clientsNotRegistred);
             //if (clientsNotRegistred.Any()) 

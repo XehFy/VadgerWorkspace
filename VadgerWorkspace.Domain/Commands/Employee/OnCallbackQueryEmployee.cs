@@ -52,12 +52,12 @@ namespace VadgerWorkspace.Domain.Commands.Employee
             await employeeBot.SendTextMessageAsync(employeeId, $"Вы открыли чат с клиентом {client.Name}");//, дальнейшие сообщения будут направлены клиенту и записываться для контроля качества.
 
             MessageRepository messageRepository = new MessageRepository(context);
-            var messagesFromClient = await messageRepository.GetAllMessagesByClientId(clientId);
-            var messages = messagesFromClient.Where(client => client.EmployeeId == employeeId);
-
+            var messages = await messageRepository.GetAllMessagesByClientId(clientId);
+            int counter = 0;
             StringBuilder ToSend = new StringBuilder();
             foreach (SavedMessage mess in messages)
             {
+                counter++;
                 string name = "сотрудник";
                 if ((bool)mess.IsFromClient)
                 {
@@ -65,8 +65,16 @@ namespace VadgerWorkspace.Domain.Commands.Employee
                 }
                 string newMess = $"{name}:\n{mess.Time}\n'{mess.Text}'\n\n";
                 ToSend.Append(newMess);
+                if (counter % 3 == 0)
+                {
+                    await employeeBot.SendTextMessageAsync(query.Message.Chat.Id, ToSend.ToString());
+                    ToSend.Clear();
+                }
             }
-            await employeeBot.SendTextMessageAsync(query.Message.Chat.Id, ToSend.ToString());
+            if (ToSend.Length > 0)
+            {
+                await employeeBot.SendTextMessageAsync(query.Message.Chat.Id, ToSend.ToString());
+            }
             employeeRepository.Update(employee);
             await clientRepository.SaveAsync();
             clientRepository.Dispose();

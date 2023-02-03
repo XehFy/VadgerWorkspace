@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,18 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
 {
     public class KeyboardClient
     {
+        public static List<string> Services = new List<string>{
+            "Получение ВНЖ🇲🇪",
+            "Открытие ИП и фирмы💼",
+            "Организация мероприятий🎉",
+            "Подбор и содержание недвижимости🏠",
+            "Покупка авто и получение прав🚗",
+            "IT разработка💻",
+            "Обмен криптовалют💰",
+            "Обмен валют💶",
+            "Индивидуальные вопросы❗️",
+            "Услуги переводчика🈲",
+        };
         public static ReplyKeyboardMarkup SelectService = new ReplyKeyboardMarkup(new[]
         {
             new KeyboardButton[] {"Получение ВНЖ🇲🇪"},

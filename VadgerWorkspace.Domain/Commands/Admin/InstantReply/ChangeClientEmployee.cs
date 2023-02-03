@@ -34,26 +34,49 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
             }
 
             ClientRepository clientRepository = new ClientRepository(context);
+            
+
+            var clients = clientRepository.FindAll().Where(c => c.EmployeeId != null && (c.IsActive == true || c.IsActive == null)).OrderBy(c => c.LastOrder);
+
+            foreach (var service in KeyboardClient.Services)
+            {
+                List<Data.Entities.Client> clientWithService = new List<Data.Entities.Client>();
+                foreach (var client in clients)
+                {
+                    if (client.Service == service)
+                    {
+                        clientWithService.Add(client);
+                    }
+                }
+                var clikeyboard = KeyboardAdmin.CreateChangeEmplKeyboard(clientWithService);
+                await adminBot.SendTextMessageAsync(message.Chat.Id, service, replyMarkup: new InlineKeyboardMarkup(clikeyboard));
+            }
+            List<Data.Entities.Client> clientOtherService = new List<Data.Entities.Client>();
+
+            foreach (var client in clients)
+            {
+                if (!KeyboardClient.Services.Contains(client.Service))
+                {
+                    clientOtherService.Add(client);
+                }
+            }
+            var clikeyboardOther = KeyboardAdmin.CreateChangeEmplKeyboard(clientOtherService);
+            await adminBot.SendTextMessageAsync(message.Chat.Id, "Другие", replyMarkup: new InlineKeyboardMarkup(clikeyboardOther));
+
             var clientsNullEmp = clientRepository.FindAll().Where(c => c.EmployeeId == null && c.Town != null && (c.IsActive == true || c.IsActive == null)).OrderBy(c => c.LastOrder);
 
-            if (clientsNullEmp.Any()) 
+            if (clientsNullEmp.Any())
             {
                 var clikeyboardNullEmp = KeyboardAdmin.CreateChangeEmplKeyboard(clientsNullEmp);
                 await adminBot.SendTextMessageAsync(message.Chat.Id, "У этих клиентов НЕ назначен сотрудник", replyMarkup: new InlineKeyboardMarkup(clikeyboardNullEmp));
 
-            } else 
+            }
+            else
             {
                 await adminBot.SendTextMessageAsync(message.Chat.Id, "Всем клиентам, закончившим регистрацию, назначен сотрудник\nОтличная работа", replyMarkup: KeyboardAdmin.Menu);
 
             }
 
-
-
-            var clientsWithEmp = clientRepository.FindAll().Where(c => c.EmployeeId != null && (c.IsActive == true || c.IsActive == null)).OrderBy(c => c.LastOrder);
-
-            var clikeyboardWithEmp = KeyboardAdmin.CreateChangeEmplKeyboard(clientsWithEmp);
-
-            await adminBot.SendTextMessageAsync(message.Chat.Id, "Тут назначен сотрудник", replyMarkup: new InlineKeyboardMarkup(clikeyboardWithEmp));
         }
 
         public override bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)

@@ -32,6 +32,7 @@ namespace VadgerWorkspace.Domain.Services
                 new InitDates(),
                 new InitReplayes(),
                 new DeactivateMass(),
+                new StatisticsShort(),
             };
         }
 

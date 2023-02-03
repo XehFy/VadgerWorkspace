@@ -218,10 +218,10 @@ namespace VadgerWorkspace.Domain.Commands.Admin
             }
             else { EmpName = "Сотрудник не назначен"; }
 
-            await adminBot.SendTextMessageAsync(query.Message.Chat.Id, $"Вы можете посмотреть ссылку в боте для клиентов\n{client.Name}\n{client.Town}\n{client.Service}\n{EmpName}", parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2);
+            await adminBot.SendTextMessageAsync(query.Message.Chat.Id, $"Вы можете посмотреть ссылку в боте для клиентов\n{client.Name}\n@{client.Tag}\n{client.Town}\n{client.Service}\n{EmpName}", parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2);
             if ((client.Town != null) && (client.Service != null))
             {         
-                await clientBot.SendTextMessageAsync(query.Message.Chat.Id, $"[{client.Name}](tg://user?id={client.Id})\n{client.Town}\n{client.Service}\n{EmpName}", parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2);
+                await clientBot.SendTextMessageAsync(query.Message.Chat.Id, $"[{client.Name}](tg://user?id={client.Id})\n@{client.Tag}\n{client.Town}\n{client.Service}\n{EmpName}", parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2);
             }
             else { 
                 await clientBot.SendTextMessageAsync(query.Message.Chat.Id, $"[{client.Name}](tg://user?id={client.Id})", parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2); 
@@ -374,12 +374,13 @@ namespace VadgerWorkspace.Domain.Commands.Admin
             var client = clientRepository.GetClientByIdSync(clientId);
 
             MessageRepository messageRepository = new MessageRepository(context);
-            var messagesFromClient = await messageRepository.GetAllMessagesByClientId(clientId);
-            var messages = messagesFromClient.Where(client => client.EmployeeId == employeeId);
+            var messages = await messageRepository.GetAllMessagesByClientId(clientId);
 
+            int counter = 0;
             StringBuilder ToSend = new StringBuilder();
             foreach(SavedMessage mess in messages)
             {
+                counter++;
                 string name = "сотрудник";
                 if ((bool)mess.IsFromClient)
                 {
@@ -387,9 +388,18 @@ namespace VadgerWorkspace.Domain.Commands.Admin
                 }
                 string newMess = $"{name}:\n{mess.Time}\n'{mess.Text}'\n\n";
                 ToSend.Append(newMess);
+                if (counter % 3 == 0)
+                {
+                    await adminBot.SendTextMessageAsync(query.Message.Chat.Id, ToSend.ToString());
+                    ToSend.Clear();
+                }
             }
 
-            await adminBot.SendTextMessageAsync(query.Message.Chat.Id, ToSend.ToString());
+            if (ToSend.Length > 0)
+            {
+                await adminBot.SendTextMessageAsync(query.Message.Chat.Id, ToSend.ToString());
+            }
+
             // В перспективе тут надо обновить сообщения у админов шобы тупа убрать инлайн клаву
 
             clientRepository.Dispose();
@@ -402,9 +412,33 @@ namespace VadgerWorkspace.Domain.Commands.Admin
 
             var clients = await clientRepository.GetAllClientsForEmployee(employeeId);
 
-            var keyBoard = KeyboardAdmin.CreateChooseClienMessagetKeyboard(clients, employeeId);
 
-            await adminBot.SendTextMessageAsync(query.Message.Chat.Id, "выберете клиента:", replyMarkup: new InlineKeyboardMarkup(keyBoard));
+            foreach (var service in KeyboardClient.Services)
+            {
+                List<Data.Entities.Client> clientWithService = new List<Data.Entities.Client>();
+                foreach (var client in clients)
+                {
+                    if (client.Service == service)
+                    {
+                        clientWithService.Add(client);
+                    }
+                }
+                var clikeyboard = KeyboardAdmin.CreateChooseClienMessagetKeyboard(clientWithService, employeeId);
+                await adminBot.SendTextMessageAsync(query.Message.Chat.Id, service, replyMarkup: new InlineKeyboardMarkup(clikeyboard));
+            }
+            List<Data.Entities.Client> clientOtherService = new List<Data.Entities.Client>();
+
+            foreach (var client in clients)
+            {
+                if (!KeyboardClient.Services.Contains(client.Service))
+                {
+                    clientOtherService.Add(client);
+                }
+            }
+            var clikeyboardOther = KeyboardAdmin.CreateChooseClienMessagetKeyboard(clientOtherService, employeeId);
+            await adminBot.SendTextMessageAsync(query.Message.Chat.Id, "Другие", replyMarkup: new InlineKeyboardMarkup(clikeyboardOther));
+
+
             // В перспективе тут надо обновить сообщения у админов шобы тупа убрать инлайн клаву
 
             clientRepository.Dispose();

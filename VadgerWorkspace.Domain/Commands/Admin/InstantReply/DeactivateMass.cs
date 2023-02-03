@@ -37,14 +37,14 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
                 var clients = clientRepository.FindAll().Where(c => (c.IsActive == true || c.IsActive == null) && c.LastOrder != null);
                 var messageRep = new MessageRepository(context);
                 StringBuilder ToSend = new StringBuilder();
-                int Range = 7;
+                int Range = 14;
                 DateTime deactivateDate = DateTime.Now.AddDays(-Range);
                 foreach (var client in clients)
                 {
                     var lastMessage = messageRep.FindAll().Where(message => message.ClientId == client.Id).OrderBy(m => m.Time).LastOrDefault() ;
                     if(lastMessage != null)
                     {
-                        if (lastMessage.Time < deactivateDate)
+                        if (lastMessage.Time < deactivateDate && client.Service != "Подбор и содержание недвижимости🏠")
                         {
                             client.IsActive = false;
                             clientRepository.Update(client);

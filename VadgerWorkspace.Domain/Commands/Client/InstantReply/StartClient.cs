@@ -43,6 +43,7 @@ namespace VadgerWorkspace.Domain.Commands.Client.InstantReply
                     Stage = Data.Stages.starting,
                     LastOrder = DateTime.Now,
                     Link = message.Chat.LinkedChatId,
+                    Tag = message.Chat.Username,
                 });
                 await clientRepository.SaveAsync();
             }

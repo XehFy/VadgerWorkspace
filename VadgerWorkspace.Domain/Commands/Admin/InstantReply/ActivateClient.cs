@@ -41,8 +41,32 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
                 ClientRepository clientRepository = new ClientRepository(context);
                 var clients = clientRepository.GetAllClientsWithTown(town).Where(c => c.IsActive == false).OrderBy(c => c.LastOrder);
 
-                var clikeyboard = KeyboardAdmin.ActivateClient(clients);
-                await adminBot.SendTextMessageAsync(message.Chat.Id, "Выберите клиента", replyMarkup: new InlineKeyboardMarkup(clikeyboard));
+                foreach(var service in KeyboardClient.Services)
+                {
+                    List<Data.Entities.Client> clientWithService = new List<Data.Entities.Client>();
+                    foreach(var client in clients)
+                    {
+                        if (client.Service == service)
+                        {
+                            clientWithService.Add(client);
+                        }
+                    }
+                    var clikeyboard = KeyboardAdmin.ActivateClient(clientWithService);
+                    await adminBot.SendTextMessageAsync(message.Chat.Id, service, replyMarkup: new InlineKeyboardMarkup(clikeyboard));
+                }
+                List<Data.Entities.Client> clientOtherService = new List<Data.Entities.Client>();
+
+                foreach (var client in clients)
+                {
+                    if (!KeyboardClient.Services.Contains(client.Service))
+                    {
+                        clientOtherService.Add(client);
+                    }
+                }
+                var clikeyboardOther = KeyboardAdmin.ActivateClient(clientOtherService);
+                await adminBot.SendTextMessageAsync(message.Chat.Id, "Другие", replyMarkup: new InlineKeyboardMarkup(clikeyboardOther));
+
+
                 //await adminBot.SendTextMessageAsync(message.Chat.Id, "У вас нет прав", replyMarkup: KeyboardAdmin.Empty);
                 return;
             }
@@ -51,9 +75,31 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
                 ClientRepository clientRepository = new ClientRepository(context);
                 var clients = clientRepository.FindAll().Where(c => c.IsActive == false).OrderBy(c => c.LastOrder);
 
-                var clikeyboard = KeyboardAdmin.ActivateClient(clients);
+                foreach (var service in KeyboardClient.Services)
+                {
+                    List<Data.Entities.Client> clientWithService = new List<Data.Entities.Client>();
+                    foreach (var client in clients)
+                    {
+                        if (client.Service == service)
+                        {
+                            clientWithService.Add(client);
+                        }
+                    }
+                    var clikeyboard = KeyboardAdmin.ActivateClient(clientWithService);
+                    await adminBot.SendTextMessageAsync(message.Chat.Id, service, replyMarkup: new InlineKeyboardMarkup(clikeyboard));
+                }
+                List<Data.Entities.Client> clientOtherService = new List<Data.Entities.Client>();
 
-                await adminBot.SendTextMessageAsync(message.Chat.Id, "Выберите клиента", replyMarkup: new InlineKeyboardMarkup(clikeyboard));
+                foreach (var client in clients)
+                {
+                    if (!KeyboardClient.Services.Contains(client.Service))
+                    {
+                        clientOtherService.Add(client);
+                    }
+                }
+                var clikeyboardOther = KeyboardAdmin.ActivateClient(clientOtherService);
+                await adminBot.SendTextMessageAsync(message.Chat.Id, "Другие", replyMarkup: new InlineKeyboardMarkup(clikeyboardOther));
+
             }
             //var clikeyboardNR = KeyboardAdmin.CreateGetLinkKeyboard(clientsNotRegistred);
             //if (clientsNotRegistred.Any()) 

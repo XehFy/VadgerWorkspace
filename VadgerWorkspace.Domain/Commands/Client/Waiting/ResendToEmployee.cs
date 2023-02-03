@@ -8,6 +8,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using VadgerWorkspace.Data.Entities;
+using VadgerWorkspace.Data.Migrations;
 using VadgerWorkspace.Data.Repositories;
 using VadgerWorkspace.Domain.Abstractions;
 using VadgerWorkspace.Infrastructure;
@@ -33,6 +34,7 @@ namespace VadgerWorkspace.Domain.Commands.Client.Waiting
             messageRepository.Create(saveMessage);
             client.IsActive = true;
             client.IsReplayed = false;
+            client.Tag = message.Chat.Username;
             clientRepository.Update(client);
             await messageRepository.SaveAsync();
 
