@@ -19,6 +19,8 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
             new KeyboardButton[] {"Включить клиента"},
             new KeyboardButton[] { "Отключить клиента" },
             new KeyboardButton[] { "Отключить старых клиентов" },
+            new KeyboardButton[] { "Статистика" },
+            new KeyboardButton[] { "Полная сатистика" },
         })
         {
             ResizeKeyboard = true

@@ -1,5 +1,6 @@
 ﻿using VadgerWorkspace.Domain.Abstractions;
 using VadgerWorkspace.Domain.Commands.Client.Waiting;
+using VadgerWorkspace.Domain.Commands.Employee.Waiting;
 
 namespace VadgerWorkspace.Domain.Services
 {
@@ -14,7 +15,7 @@ namespace VadgerWorkspace.Domain.Services
                 new WaitingClient(),
                 new SelectServiceClient(),
                 new SelectTownClient(),
-                new ResendToEmployee(),
+                new ResendOtherTypesEmpl(),
                 new ResendOtherTypes(),
             };
         }

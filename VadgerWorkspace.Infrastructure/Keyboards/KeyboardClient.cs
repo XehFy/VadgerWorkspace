@@ -39,6 +39,39 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
             ResizeKeyboard = true
         };
 
+        public static List<string> Towns = new List<string>{
+            "Бар",
+            "Будва",
+            "Тиват",
+            "Котор",
+            "Херцег-Нови",
+            "Подгорица",
+            "Ульцинь",
+            "Другие",
+        };
+
+        public static ReplyKeyboardMarkup FAQ = new ReplyKeyboardMarkup(new[]
+        {
+            new KeyboardButton[] {"Получение ВНЖ🇲🇪"},
+            new KeyboardButton[] {"Открытие ИП и фирмы💼"},
+            new KeyboardButton[] {"Подбор и содержание недвижимости🏠"},
+            new KeyboardButton[] {"Покупка авто и получение прав🚗"},
+            new KeyboardButton[] {"Обмен криптовалют💰"},
+            new KeyboardButton[] {"Обмен валют💶"},
+        })
+        {
+            ResizeKeyboard = true
+        };
+
+        public static ReplyKeyboardMarkup Menu = new ReplyKeyboardMarkup(new[]
+        {
+            new KeyboardButton[] {"Часто задаваемые вопросы"},
+            new KeyboardButton[] {"Заказать новую услугу"},
+        })
+        {
+            ResizeKeyboard = true
+        };
+
         public static ReplyKeyboardMarkup SelectTown = new ReplyKeyboardMarkup(new[]
         {
             new KeyboardButton[] {"Бар"},
@@ -49,14 +82,6 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
             new KeyboardButton[] {"Подгорица"},
             new KeyboardButton[] {"Ульцинь"},
             new KeyboardButton[] {"Другие"},
-        })
-        {
-            ResizeKeyboard = true
-        };
-
-        public static ReplyKeyboardMarkup Menu = new ReplyKeyboardMarkup(new[]
-        {
-            new KeyboardButton[] {"Заказать новую услугу"},
         })
         {
             ResizeKeyboard = true

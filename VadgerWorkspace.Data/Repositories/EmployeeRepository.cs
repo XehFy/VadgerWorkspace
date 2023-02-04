@@ -46,7 +46,7 @@ namespace VadgerWorkspace.Data.Repositories
         public IEnumerable<Employee> GetAllEmpsWithTown(string town)
         {
             var arr = town.Split(' ');
-            var emps = _dbContext.Set<Employee>().Where(x => (x.IsLocalAdmin ==true || x.IsAdmin==false )&& x.Town!= null ).AsEnumerable<Employee>();
+            var emps = _dbContext.Set<Employee>().Where(x => (x.IsLocalAdmin == true || x.IsAdmin==false )&& x.Town!= null && x.IsVerified == true).AsEnumerable<Employee>();
             return emps.Where(a => a.Town.Split(' ')
                 .Select(x => x).Intersect(arr).Any());
         }

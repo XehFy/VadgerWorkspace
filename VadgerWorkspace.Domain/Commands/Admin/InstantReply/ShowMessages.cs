@@ -60,7 +60,7 @@ namespace VadgerWorkspace.Domain.Commands.Admin.InstantReply
                 await adminBot.SendTextMessageAsync(message.Chat.Id, "выберете сотрудника", replyMarkup: new InlineKeyboardMarkup(empKeyboard));
             } else
             {
-                employees = employeeRepository.FindAll();
+                employees = employeeRepository.FindAll().Where(c => c.IsVerified == true);
                 var empKeyboard = KeyboardAdmin.CreateChooseEmployeeMessageKeyboard(employees);
                 await adminBot.SendTextMessageAsync(message.Chat.Id, "выберете сотрудника", replyMarkup: new InlineKeyboardMarkup(empKeyboard));
             }
