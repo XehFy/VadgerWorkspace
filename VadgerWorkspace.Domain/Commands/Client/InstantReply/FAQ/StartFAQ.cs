@@ -12,11 +12,11 @@ using VadgerWorkspace.Domain.Abstractions;
 using VadgerWorkspace.Infrastructure;
 using VadgerWorkspace.Infrastructure.Keyboards;
 
-namespace VadgerWorkspace.Domain.Commands.Client.RequiresWaiting
+namespace VadgerWorkspace.Domain.Commands.Client.InstantReply.FAQ
 {
-    internal class MakeOrder : TelegramCommand
+    internal class StartFAQ : TelegramCommand
     {
-        public override string Name => "Заказать новую услугу";
+        public override string Name => "Часто задаваемые вопросы";
 
         public async override Task Execute(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
@@ -31,8 +31,7 @@ namespace VadgerWorkspace.Domain.Commands.Client.RequiresWaiting
                 {
                     Name = message.Chat.FirstName,
                     Id = message.Chat.Id,
-                    Stage = Data.Stages.SelectService,
-                    Link = message.Chat.LinkedChatId,
+                    IsChechedFAQ = 1,
                 });
                 await clientRepository.SaveAsync();
             }
@@ -46,15 +45,23 @@ namespace VadgerWorkspace.Domain.Commands.Client.RequiresWaiting
                 ////ПОТОМ УБРАТЬ
                 //client.EmployeeId = 0;
                 ////УБРАТЬ НАХОЙ
-                client.Stage = Data.Stages.SelectService;
+                client.EmployeeId = null;
+                if(client.IsChechedFAQ == null)
+                {
+                    client.IsChechedFAQ = 0;
+                }
+                var bytes = BitConverter.GetBytes((int)client.IsChechedFAQ);
+                bytes[0] = 1;
+                int resultBytes = BitConverter.ToInt32(bytes);
+                client.IsChechedFAQ = resultBytes;
                 clientRepository.Update(client);
                 await clientRepository.SaveAsync();
 
             }
             clientRepository.Dispose();
 
-            string text = $"✉️Выберете желаемую услугу из предложенных или опишите запрос";
-            var mes = await clientBot.SendTextMessageAsync(message.Chat.Id, text, replyMarkup: KeyboardClient.SelectService);
+            string text = $"Выберете вопрос";
+            var mes = await clientBot.SendTextMessageAsync(message.Chat.Id, text, replyMarkup: KeyboardClient.FAQ);
         }
 
         public override bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)

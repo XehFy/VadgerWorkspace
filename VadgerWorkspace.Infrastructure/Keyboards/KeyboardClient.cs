@@ -52,12 +52,10 @@ namespace VadgerWorkspace.Infrastructure.Keyboards
 
         public static ReplyKeyboardMarkup FAQ = new ReplyKeyboardMarkup(new[]
         {
-            new KeyboardButton[] {"Получение ВНЖ🇲🇪"},
-            new KeyboardButton[] {"Открытие ИП и фирмы💼"},
-            new KeyboardButton[] {"Подбор и содержание недвижимости🏠"},
-            new KeyboardButton[] {"Покупка авто и получение прав🚗"},
-            new KeyboardButton[] {"Обмен криптовалют💰"},
-            new KeyboardButton[] {"Обмен валют💶"},
+            new KeyboardButton[] {"🇲🇪Получение ВНЖ"},
+            new KeyboardButton[] {"💼Открытие ИП и фирмы"},
+            new KeyboardButton[] {"🏠Подбор и содержание недвижимости"},
+            new KeyboardButton[] {"🚗Покупка авто и получение прав"},
         })
         {
             ResizeKeyboard = true

@@ -19,5 +19,6 @@ namespace VadgerWorkspace.Data.Entities
         public DateTime? LastOrder { get; set; }
         public string? Tag { get; set; }
         public bool? IsReplayed { get; set; }
+        public int? IsChechedFAQ { get; set; }
     }
 }

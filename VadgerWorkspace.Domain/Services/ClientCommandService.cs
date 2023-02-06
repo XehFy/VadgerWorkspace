@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using VadgerWorkspace.Domain.Abstractions;
 using VadgerWorkspace.Domain.Commands.Client;
 using VadgerWorkspace.Domain.Commands.Client.InstantReply;
+using VadgerWorkspace.Domain.Commands.Client.InstantReply.FAQ;
 //using VadgerWorkspace.Domain.Commands.Client.InstantReply;
 using VadgerWorkspace.Domain.Commands.Client.RequiresWaiting;
 
@@ -20,7 +21,12 @@ namespace VadgerWorkspace.Domain.Services
             _commands = new List<INorTelegramCommand>
             {
                 new StartClient(),
-                new MakeOrder()
+                new MakeOrder(),
+                new StartFAQ(),
+                new FAQ1(),
+                new FAQ2(),
+                new FAQ3(),
+                new FAQ4(),
             };
         }
 

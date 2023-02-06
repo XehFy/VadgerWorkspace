@@ -11,7 +11,6 @@ using VadgerWorkspace.Data.Entities;
 using VadgerWorkspace.Data.Repositories;
 using VadgerWorkspace.Domain.Abstractions;
 using VadgerWorkspace.Infrastructure;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace VadgerWorkspace.Domain.Commands.Employee.Waiting
 {
