@@ -54,13 +54,13 @@ namespace VadgerWorkspace.Domain.Commands.Employee.Waiting
             if (client != null)
             {
 
-                var adminsGlob = employeeRepository.GetAllGlobalAdmins();
-                var text = $"От сотрудника {employee.Name}\n сообщение не текстового типа для {client.Name}";
-                foreach (var admin in adminsGlob)
-                {
-                    await clientBot.SendTextMessageAsync(admin.Id, text);
-                    await clientBot.CopyMessageAsync(admin.Id, employee.Id, message.MessageId);
-                }
+                //var adminsGlob = employeeRepository.GetAllGlobalAdmins();
+                var text = $"От сотрудника";
+                //foreach (var admin in adminsGlob)
+                //{
+                //    await clientBot.SendTextMessageAsync(admin.Id, text);
+                //    await clientBot.CopyMessageAsync(admin.Id, employee.Id, message.MessageId);
+                //}
                 if (client != null)
                 {
                     await clientBot.SendTextMessageAsync(client.Id, text);
@@ -73,6 +73,9 @@ namespace VadgerWorkspace.Domain.Commands.Employee.Waiting
 
         public override bool IsExecutionNeeded(Message message, IClientBot clientBot, IEmployeeBot employeeBot, IAdminBot adminBot, DbContext context)
         {
+            EmployeeRepository employeeRepository = new EmployeeRepository(context);
+            var employee = employeeRepository.GetEmployeeByIdSync(message.Chat.Id);
+            if(employee == null) { return false; }
             if (message.Type == MessageType.Audio ||
                 message.Type == MessageType.Document ||
                 message.Type == MessageType.Photo ||
